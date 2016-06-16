@@ -2,19 +2,15 @@ package net.gutefrage
 
 import java.util.concurrent.atomic.AtomicLong
 
-import com.twitter.finagle.Thrift
+import com.twitter.finagle.{Thrift, ThriftMux}
 import com.twitter.finagle.thrift.Protocols
 import com.twitter.util.Future
-
 import net.gutefrage.temperature.thrift._
+import net.gutefrage.config._
 
 object TemperatureServer extends App {
 
-  val port = args match {
-    case Array(port) => port.toInt
-    case Array() => 8080
-    case _ => throw new IllegalArgumentException("usage: run [port]")
-  }
+  val config = Config.parseServerConfig(args).getOrElse(sys.exit(1))
 
   // the actual server implementation
   val service = new TemperatureService.FutureIface {
@@ -42,13 +38,17 @@ object TemperatureServer extends App {
   // Run the service implemented on the port 8080, but not announce it
   // val server = Thrift.serveIface(":8080", service)
 
+  val serverProtocol = config.protocol match {
+    case ThriftProtocol => Thrift.server
+    case MuxProtocol => ThriftMux.server
+  }
+
   // run and announce the service
-  // TODO try ThriftMux for server/consumer
-  val server = Thrift.server
+  val server = serverProtocol
     .withLabel("temperature-service")
     .serveAndAnnounce(
       name = Services.temperatureServiceProvider,
-      addr = s":$port",
+      addr = s":${config.port}",
       service = finagledService
     )
 

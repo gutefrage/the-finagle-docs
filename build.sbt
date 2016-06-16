@@ -11,6 +11,7 @@ libraryDependencies ++= Seq(
   "com.twitter" %% "finagle-mysql" % "6.35.0",
   "com.twitter" %% "finagle-thrift"  % "6.35.0",
   "com.twitter" %% "finagle-http" % "6.35.0",
-  "com.twitter" %% "finagle-thriftmux"  % "6.35.0"
+  "com.twitter" %% "finagle-thriftmux"  % "6.35.0",
+  "com.github.scopt" %% "scopt" % "3.5.0"
 )
 

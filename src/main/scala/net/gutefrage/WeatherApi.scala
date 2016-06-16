@@ -1,25 +1,28 @@
 package net.gutefrage
 
 import com.twitter.finagle.http.service.HttpResponseClassifier
-import com.twitter.finagle.{Http, Service, Thrift}
+import com.twitter.finagle.{Http, Service, Thrift, ThriftMux}
 import com.twitter.finagle.http.{Request, Response, Status}
 import com.twitter.io.Buf
 import com.twitter.util.Future
+import net.gutefrage.config._
 import net.gutefrage.temperature.thrift.TemperatureService
 
 object WeatherApi extends App {
 
-  val port = args match {
-    case Array(port) => port.toInt
-    case Array() => 8000
-    case _ => throw new IllegalArgumentException("usage: run [port]")
-  }
-
+  val config = Config.parseServerConfig(args).getOrElse(sys.exit(1))
 
   val weatherService = new Service[Request, Response] {
 
-    val client = Thrift.newIface[TemperatureService.FutureIface](
-      Services.temperatureServiceConsumer, "weather-api")
+    val client = config.protocol match {
+      case ThriftProtocol =>
+        Thrift.newIface[TemperatureService.FutureIface](
+          Services.temperatureServiceConsumer, "temperature-sensor")
+
+      case MuxProtocol => ThriftMux.newIface[TemperatureService.FutureIface](
+        Services.temperatureServiceConsumer, "temperature-sensor-mux")
+    }
+
 
     def apply(request: Request): Future[Response] = {
       client.mean().map { mean =>
@@ -37,7 +40,7 @@ object WeatherApi extends App {
       .withResponseClassifier(HttpResponseClassifier.ServerErrorsAsFailures)
     .serveAndAnnounce(
       name = Services.weatherServiceProvider,
-      addr = s":$port",
+      addr = s":${config.port}",
       service = weatherService
     )
 
