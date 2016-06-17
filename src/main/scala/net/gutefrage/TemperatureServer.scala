@@ -2,31 +2,75 @@ package net.gutefrage
 
 import java.util.concurrent.atomic.AtomicLong
 
+import com.twitter.finagle.exp.Mysql
+import com.twitter.finagle.exp.mysql._
+import com.twitter.conversions.time._
 import com.twitter.finagle.{Thrift, ThriftMux}
 import com.twitter.finagle.thrift.Protocols
-import com.twitter.util.Future
+import com.twitter.logging.Logger
+import com.twitter.util.{Await, Future}
 import net.gutefrage.temperature.thrift._
 import net.gutefrage.config._
 
 object TemperatureServer extends App {
 
+  val log = Logger()
   val config = Config.parseServerConfig(args).getOrElse(sys.exit(1))
 
   // the actual server implementation
   val service = new TemperatureService.FutureIface {
 
-    private val sum = new AtomicLong(0L)
-    private val numDatums = new AtomicLong(0L)
+    private val mysql = Mysql.client
+        .withLabel("temperature-mysql-client")
+        .withCredentials("weather", "weather")
+        .withDatabase("weather")
+        .newRichClient("localhost:3306")
+
+
+    val create = mysql.query(
+      """CREATE TABLE IF NOT EXISTS temperature_datums (
+    id int(11) unsigned NOT NULL AUTO_INCREMENT,
+    celsius int(11) DEFAULT NULL,
+    timestamp DATETIME DEFAULT NOW(),
+    PRIMARY KEY (id)
+  ) ENGINE=InnoD DEFAULT CHARSET=utf8""")
+        .onSuccess(r => log.info(s"Created database: $r"))
+        .onFailure(f => log.error("Failed creating database", f))
+
+
+    // await the creation of mysql tables
+    Await.ready(create, 10.seconds)
 
     override def add(datum: TemperatureDatum): Future[Unit] = {
-      sum.addAndGet(datum.celsius)
-      numDatums.incrementAndGet()
-      Future.Unit
+      mysql.query(s"""
+      INSERT INTO temperature_datums (celsius, timestamp)
+      VALUES (${datum.celsius}, from_unixtime(${datum.timestamp}))""").map { result =>
+        log.info(s"Storing datum with result: $result")
+        Unit
+      }
     }
 
     override def mean(): Future[Double] = {
-      val n = numDatums.get
-      if(n == 0) Future.value(0.0) else Future.value(sum.get / n)
+      mysql.query("SELECT avg(celsius) as avg FROM temperature_datums").map {
+        case r: ResultSet =>
+          val average = for {
+            first <- r.rows.headOption
+            avg <- first("avg")
+          } yield avg match {
+            case LongValue(v) => v.toDouble
+            case DoubleValue(d) => d
+            case RawValue(Type.NewDecimal, charset, isBinary, bytes) =>
+              val str = new String(bytes, Charset(charset))
+              str.toDouble // this makes me sad
+            case v =>
+              log.error(s"Received invalid mysql value: $v")
+              0.0
+          }
+          average.getOrElse(0.0)
+        case response =>
+          log.error("Received not a result set")
+          0.0
+      }
     }
   }
 

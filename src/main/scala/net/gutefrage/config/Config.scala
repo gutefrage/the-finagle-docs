@@ -9,6 +9,8 @@ case object MuxProtocol extends Protocol
 case class ClientConfig(protocol: Protocol)
 case class ServerConfig(port: Int, protocol: Protocol)
 
+// TODO may replace with com.twitter.app.App
+// see https://github.com/twitter/finagle/blob/develop/finagle-example/src/main/scala/com/twitter/finagle/example/mysql/Example.scala#L42-L46
 object Config {
 
   private implicit val protocolReads: scopt.Read[Protocol] = scopt.Read.reads {

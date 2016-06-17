@@ -26,7 +26,7 @@ object WeatherApi extends App {
 
     def apply(request: Request): Future[Response] = {
       client.mean().map { mean =>
-        val response = Response.apply(Status.Ok)
+        val response = Response(Status.Ok)
         response.contentType = "text/plain"
         response.content = Buf.Utf8.apply(mean.toString)
         response
