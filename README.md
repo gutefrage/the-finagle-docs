@@ -1,13 +1,36 @@
-# A sample app using Finagle client using Apache Thrift
+# Example Finalge App
 
-For running the sample execute in one terminal:
+The app consists of multiple applications that must be started.
 
-	cd finagle-thift-sample/server
-	sbt run
+- `TemperatureServer` service with thrift interface to store data and
+provide it through a thrift API
+- `TemperatureSensor` generates random data and sends it to the
+`TemperaetureServer`
+- `WeatherApi` vanilla finagle HTTP api to access weather data
+- `FinchWeatherApi` HTTP api to access weather data
 
-And form another terminal run:
+# Requirements
 
-	cd finagle-thrift-sample/client
-	sbt run
+You need [docker-compose][] and docker to run the mysql and zookeeper
+container
 
-Enjoy !! (Y) :)
+[docker-compose](https://docs.docker.com/compose/install/)
+
+# Start the application
+
+```
+# start mysql and zookeeper
+docker-compose up
+
+# temperature server
+sbt "runMain net.gutefrage.TemperatureServer --protocol mux --port 8081"
+
+# sensor sensor
+sbt "runMain net.gutefrage.TemperatureSensor --protocol mux"
+
+# http api
+sbt "runMain net.gutefrage.FinchWeatherApi --port 8000"
+
+# ask for the mean temperature
+curl localhost:8000/weather/mean
+```
