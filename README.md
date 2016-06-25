@@ -23,13 +23,13 @@ container
 docker-compose up
 
 # temperature server
-sbt "runMain net.gutefrage.TemperatureServer --protocol mux --port 8081"
+sbt "runMain net.gutefrage.TemperatureServer -protocol mux -port 8081"
 
 # sensor sensor
-sbt "runMain net.gutefrage.TemperatureSensor --protocol mux"
+sbt "runMain net.gutefrage.TemperatureSensor -protocol mux"
 
 # http api
-sbt "runMain net.gutefrage.FinchWeatherApi --port 8000"
+sbt "runMain net.gutefrage.FinchWeatherApi -port 8000"
 
 # ask for the mean temperature
 curl localhost:8000/weather/mean

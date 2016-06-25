@@ -16,7 +16,6 @@ libraryDependencies ++= Seq(
   "com.twitter" %% "finagle-http" % finagleVersion,
   "com.twitter" %% "finagle-thriftmux"  % finagleVersion,
   "com.github.finagle" %% "finch-core" % finchVersion,
-  "com.github.finagle" %% "finch-circe" % finchVersion,
-  "com.github.scopt" %% "scopt" % "3.5.0"
+  "com.github.finagle" %% "finch-circe" % finchVersion
 )
 
