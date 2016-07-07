@@ -33,7 +33,7 @@ object TemperatureServer extends App {
     celsius int(11) DEFAULT NULL,
     timestamp DATETIME DEFAULT NOW(),
     PRIMARY KEY (id)
-  ) ENGINE=InnoD DEFAULT CHARSET=utf8""")
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8""")
         .onSuccess(r => log.info(s"Created database: $r"))
         .onFailure(f => log.error("Failed creating database", f))
 
