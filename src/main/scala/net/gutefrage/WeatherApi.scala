@@ -2,7 +2,7 @@ package net.gutefrage
 
 import com.twitter.app.App
 import com.twitter.finagle.http.service.HttpResponseClassifier
-import com.twitter.finagle.{Http, Service, Thrift, ThriftMux}
+import com.twitter.finagle._
 import com.twitter.finagle.http.{Request, Response, Status}
 import com.twitter.io.Buf
 import com.twitter.util.Future
@@ -39,7 +39,6 @@ object WeatherApi extends App {
         }
       }
     }
-
 
     val server = Http.server
         .withLabel("weather-api")

@@ -19,30 +19,31 @@ object TemperatureSensor extends App {
 
   def main(): Unit = {
 
-    val client = protocol() match {
-      case ThriftProtocol =>
-        Thrift.newIface[TemperatureService.FutureIface](
-          Services.temperatureServiceConsumer, "temperature-sensor")
+      val client = protocol() match {
+        case ThriftProtocol =>
+          Thrift.newIface[TemperatureService.FutureIface](
+            Services.temperatureServiceConsumer, "temperature-sensor")
 
-      case ThriftMuxProtocol => ThriftMux.newIface[TemperatureService.FutureIface](
-        Services.temperatureServiceConsumer, "temperature-sensor-mux")
-    }
+        case ThriftMuxProtocol => ThriftMux.newIface[TemperatureService.FutureIface](
+          Services.temperatureServiceConsumer, "temperature-sensor-mux")
+      }
 
-    implicit val timer = DefaultTimer.twitter
-    val randomTemp = new java.util.Random()
+      implicit val timer = DefaultTimer.twitter
+      val randomTemp = new java.util.Random()
 
-    def sendLoop: Future[Unit] = {
-      val datum = TemperatureDatum(randomTemp.nextInt(40) - 10, System.currentTimeMillis / 1000)
-      println(s"Sending data: $datum")
-      for {
-        _ <- Future.sleep(1.second)
-        _ <- client.add(datum)
-        _ <- sendLoop
-      } yield ()
-    }
+      def sendLoop: Future[Unit] = {
+        val datum = TemperatureDatum(randomTemp.nextInt(40) - 10, System.currentTimeMillis / 1000)
+        println(s"Sending data: $datum")
+        for {
+          _ <- Future.sleep(1.second)
+          _ <- client.add(datum)
+          _ <- sendLoop
+        } yield ()
+      }
 
-    // only run for a short amount of time
-    val loop = sendLoop
+      // only run for a short amount of time
+      val loop = sendLoop
+
 
     // interrupt on keypress
     System.in.read()

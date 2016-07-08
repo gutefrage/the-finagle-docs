@@ -1,11 +1,11 @@
 package net.gutefrage
 
 
-import com.twitter.app.{App}
+import com.twitter.app.App
 import com.twitter.finagle.exp.Mysql
 import com.twitter.finagle.exp.mysql._
 import com.twitter.conversions.time._
-import com.twitter.finagle.{Thrift, ThriftMux}
+import com.twitter.finagle._
 import com.twitter.finagle.thrift.Protocols
 import com.twitter.logging.Logger
 import com.twitter.util.{Await, Future}
@@ -99,7 +99,7 @@ object TemperatureServer extends App {
       .serveAndAnnounce(
         name = Services.temperatureServiceProvider,
         addr = s":${port()}",
-        service = finagledService
+        service = new DtabLogger andThen finagledService
       )
 
     // Keep waiting for the server and prevent the java process to exit
