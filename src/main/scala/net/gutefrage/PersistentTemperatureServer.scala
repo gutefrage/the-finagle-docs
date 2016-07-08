@@ -12,12 +12,14 @@ import com.twitter.util.{Await, Future}
 import net.gutefrage.temperature.thrift._
 import net.gutefrage.config._
 
-object TemperatureServer extends App {
+object PersistentTemperatureServer extends App {
 
   import TransportProtocol._
+  import Env._
 
-  val protocol = flag("protocol", ThriftMuxProtocol: Protocol, "Protocol to use: thrift | mux")
-  val port = flag("port", 8080, "port this server should use")
+  val protocol = flag[Protocol]("protocol", ThriftMuxProtocol, "Protocol to use: thrift | mux")
+  val port = flag[Int]("port", 8080, "port this server should use")
+  val env = flag[Env]("env", Env.Local, "environment this server runs")
 
   val log = Logger()
 
@@ -97,15 +99,16 @@ object TemperatureServer extends App {
     val server = serverProtocol
       .withLabel("temperature-service")
       .serveAndAnnounce(
-        name = Services.temperatureServiceProvider,
+        name = Services.temperatureServiceProvider(env()),
         addr = s":${port()}",
         service = new DtabLogger andThen finagledService
       )
 
     // Keep waiting for the server and prevent the java process to exit
-
-    System.in.read()
-    server.close()
+    onExit {
+      log.info("Shutting down temperature server")
+    }
+    closeOnExit(server)
 
   }
 

@@ -12,9 +12,11 @@ import net.gutefrage.temperature.thrift.TemperatureService
 object WeatherApi extends App {
 
   import TransportProtocol._
+  import Env._
 
-  val protocol = flag("protocol", ThriftMuxProtocol: Protocol, "Protocol to use: thrift | mux")
-  val port = flag("port", 8080, "port this server should use")
+  val protocol = flag[Protocol]("protocol", ThriftMuxProtocol, "Protocol to use: thrift | mux")
+  val port = flag[Int]("port", 8080, "port this server should use")
+  val env = flag[Env]("env", Env.Local, "environment this server runs")
 
   def main(): Unit = {
 
@@ -44,7 +46,7 @@ object WeatherApi extends App {
         .withLabel("weather-api")
         .withResponseClassifier(HttpResponseClassifier.ServerErrorsAsFailures)
       .serveAndAnnounce(
-        name = Services.weatherServiceProvider,
+        name = Services.weatherServiceProvider(env()),
         addr = s":${port()}",
         service = weatherService
       )

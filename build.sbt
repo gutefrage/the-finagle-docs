@@ -19,3 +19,4 @@ libraryDependencies ++= Seq(
   "com.github.finagle" %% "finch-circe" % finchVersion
 )
 
+fork in run := true
