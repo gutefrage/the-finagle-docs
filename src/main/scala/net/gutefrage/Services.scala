@@ -17,10 +17,11 @@ object Services {
 
   object Dtabs {
     val base = Dtab.read(
-      """|/zk#  => /$/com.twitter.serverset;
-         |/s##  => /zk#/127.0.0.1:2181;
-         |/s#   => /s##/local;
-         |/s    => /s#;""".stripMargin)
+      """|/zk##    => /$/com.twitter.serverset;
+         |/zk#     => /zk##/127.0.0.1:2181;
+         |/s#      => /zk#/service;
+         |/env     => /s#/local;
+         |/s       => /env;""".stripMargin)
   }
 
   private val temperatureServicePath = "temperature"
@@ -32,12 +33,12 @@ object Services {
   def weatherServiceProvider(env: Env) = buildProviderPath(env, weatherServicePath)
 
   def buildProviderPath(env: Env, servicePath: String, zookeeperDest: String = zookeeperDest): String = {
-    s"zk!$zookeeperDest!/${env.name}/$servicePath!0"
+    s"zk!$zookeeperDest!/service/${env.name}/$servicePath!0"
   }
 
   // example states you should use `zk2`, but works with `zk` as well
   def buildConsumerPath(servicePath: String, zookeeperDest: String = zookeeperDest): String = {
-    s"zk!$zookeeperDest!/local/$servicePath"
+    s"zk!$zookeeperDest!/service/local/$servicePath"
   }
 
 }

@@ -12,6 +12,7 @@ import com.twitter.logging.{Level, Logger}
 import com.twitter.util.{Await, Future}
 import net.gutefrage.config._
 import net.gutefrage.temperature.thrift._
+import org.slf4j.bridge.SLF4JBridgeHandler
 
 object InMemoryTemperatureServer extends App {
 
@@ -22,8 +23,16 @@ object InMemoryTemperatureServer extends App {
   val port = flag[Int]("port", 8080, "port this server should use")
   val env = flag[Env]("env", Env.Local, "environment this server runs")
 
-  val log = Logger()
-  log.setLevel(Level.INFO)
+  premain {
+    SLF4JBridgeHandler.removeHandlersForRootLogger()
+    SLF4JBridgeHandler.install()
+  }
+
+  onExit {
+    log.info("Shutting down temperature server")
+  }
+
+  val log = Logger("application")
 
   def main() {
     log.info(s"Starting temperature server in ${env().name}")
@@ -73,10 +82,6 @@ object InMemoryTemperatureServer extends App {
       )
 
     // Keep waiting for the server and prevent the java process to exit
-    onExit {
-      log.info("Shutting down temperature server")
-    }
-
     closeOnExit(server)
     Await.ready(server)
   }
