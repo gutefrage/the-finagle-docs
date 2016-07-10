@@ -69,9 +69,6 @@ object InMemoryTemperatureServer extends App {
       case TransportProtocol.ThriftMuxProtocol => ThriftMux.server
     }
 
-    Dtab.base = Services.Dtabs.base
-
-
     // run and announce the service
     val server = serverProtocol
       .withLabel("temperature-service")
