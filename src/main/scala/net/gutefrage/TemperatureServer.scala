@@ -3,23 +3,17 @@ package net.gutefrage
 import java.util.concurrent.atomic.AtomicLong
 
 import com.twitter.app.App
-import com.twitter.conversions.time._
 import com.twitter.finagle._
-import com.twitter.finagle.exp.Mysql
-import com.twitter.finagle.exp.mysql._
 import com.twitter.finagle.thrift.Protocols
-import com.twitter.logging.{Level, Logger}
+import com.twitter.logging.Logger
 import com.twitter.util.{Await, Future}
-import net.gutefrage.config._
 import net.gutefrage.temperature.thrift._
 import org.slf4j.bridge.SLF4JBridgeHandler
 
-object InMemoryTemperatureServer extends App {
+object TemperatureServer extends App {
 
-  import TransportProtocol._
   import Env._
 
-  val protocol = flag[Protocol]("protocol", ThriftMuxProtocol, "Protocol to use: thrift | mux")
   val port = flag[Int]("port", 8080, "port this server should use")
   val env = flag[Env]("env", Env.Local, "environment this server runs")
 
@@ -64,13 +58,8 @@ object InMemoryTemperatureServer extends App {
     // Run the service implemented on the port 8080, but not announce it
     // val server = Thrift.serveIface(":8080", service)
 
-    val serverProtocol = protocol() match {
-      case TransportProtocol.ThriftProtocol => Thrift.server
-      case TransportProtocol.ThriftMuxProtocol => ThriftMux.server
-    }
-
     // run and announce the service
-    val server = serverProtocol
+    val server = ThriftMux.server
       .withLabel("temperature-service")
       .serveAndAnnounce(
         name = Services.temperatureServiceProvider(env()),

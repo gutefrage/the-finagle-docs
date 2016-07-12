@@ -4,7 +4,7 @@ organization := "net.gutefrage"
 
 scalaVersion  := "2.11.7"
 
-val finagleVersion = "6.35.0"
+val finagleVersion = "6.36.0"
 val finchVersion = "0.10.0"
 
 libraryDependencies ++= Seq(
@@ -17,6 +17,8 @@ libraryDependencies ++= Seq(
   "com.twitter" %% "finagle-thriftmux"  % finagleVersion,
   "com.github.finagle" %% "finch-core" % finchVersion,
   "com.github.finagle" %% "finch-circe" % finchVersion,
+  // json
+  "io.circe" %% "circe-generic" % "0.4.1",
   // logging
   "org.slf4j" % "jul-to-slf4j" % "1.7.7",
   "ch.qos.logback" % "logback-core" % "1.1.7",

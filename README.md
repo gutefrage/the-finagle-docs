@@ -23,16 +23,13 @@ container
 docker-compose up
 
 # temperature server with mysql
-sbt "runMain net.gutefrage.TemperatureServer -protocol mux -port 8081"
-
-# temperature server in memory
-sbt "runMain net.gutefrage.PersistentTemperatureServer -protocol mux -port 8082"
+sbt "runMain net.gutefrage.TemperatureServer -port 8081"
 
 # sensor sensor
-sbt "runMain net.gutefrage.TemperatureSensor -protocol mux"
+sbt "runMain net.gutefrage.TemperatureSensor"
 
 # http api
-sbt "runMain net.gutefrage.FinchWeatherApi -port 8000"
+sbt "runMain net.gutefrage.WeatherApi -port 8000"
 
 # ask for the mean temperature
 curl localhost:8000/weather/mean

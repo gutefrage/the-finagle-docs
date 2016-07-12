@@ -1,60 +1,60 @@
 package net.gutefrage
 
 import com.twitter.app.App
-import com.twitter.finagle.http.service.HttpResponseClassifier
 import com.twitter.finagle._
-import com.twitter.finagle.http.{Request, Response, Status}
-import com.twitter.io.Buf
-import com.twitter.util.Future
-import net.gutefrage.config._
+import com.twitter.finagle.http.service.HttpResponseClassifier
+import com.twitter.util.Await
+import io.finch._
+import io.finch.circe._
+import io.circe.generic.auto._
 import net.gutefrage.temperature.thrift.TemperatureService
+import org.slf4j.LoggerFactory
+import org.slf4j.bridge.SLF4JBridgeHandler
 
 object WeatherApi extends App {
 
-  import TransportProtocol._
   import Env._
 
-  val protocol = flag[Protocol]("protocol", ThriftMuxProtocol, "Protocol to use: thrift | mux")
   val port = flag[Int]("port", 8080, "port this server should use")
   val env = flag[Env]("env", Env.Local, "environment this server runs")
 
+  case class Mean(mean: Double)
+
+  val log = LoggerFactory.getLogger("application")
+
+  premain {
+    SLF4JBridgeHandler.removeHandlersForRootLogger()
+    SLF4JBridgeHandler.install()
+
+    // setting base dtab
+    Dtab.base = Services.Dtabs.base
+  }
+
+  onExit {
+    log.info("Shutting down finch api server")
+  }
+
   def main(): Unit = {
+    log.info(s"Starting finch api server in ${env().name}")
 
-    val weatherService = new Service[Request, Response] {
+    val client = ThriftMux.client.newIface[TemperatureService.FutureIface](
+      "/s/temperature", /*Services.temperatureServiceConsumer*/ "temperature-server-mux")
 
-      val client = protocol() match {
-        case ThriftProtocol =>
-          Thrift.newIface[TemperatureService.FutureIface](
-            Services.temperatureServiceConsumer, "temperature-sensor")
-
-        case ThriftMuxProtocol => ThriftMux.newIface[TemperatureService.FutureIface](
-          Services.temperatureServiceConsumer, "temperature-sensor-mux")
-      }
-
-
-      def apply(request: Request): Future[Response] = {
-        client.mean().map { mean =>
-          val response = Response(Status.Ok)
-          response.contentType = "text/plain"
-          response.content = Buf.Utf8.apply(mean.toString)
-          response
-        }
-      }
+    val api: Endpoint[Mean] = get("weather" / "mean") {
+      client.mean().map(mean => Ok(Mean(mean)))
     }
 
     val server = Http.server
-        .withLabel("weather-api")
-        .withResponseClassifier(HttpResponseClassifier.ServerErrorsAsFailures)
+      .withLabel("weather-api")
+      .withResponseClassifier(HttpResponseClassifier.ServerErrorsAsFailures)
       .serveAndAnnounce(
-        name = Services.weatherServiceProvider(env()),
-        addr = s":${port()}",
-        service = weatherService
+          name = Services.weatherServiceProvider(env()),
+          addr = s":${port()}",
+          service = api.toService
       )
 
-    // interrupt on keypress
-    System.in.read()
-    server.close()
-
+    closeOnExit(server)
+    Await.ready(server)
   }
 
 }

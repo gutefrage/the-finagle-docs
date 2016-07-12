@@ -1,7 +1,6 @@
 package net.gutefrage
 
 import com.twitter.finagle.Dtab
-import net.gutefrage.config.Env
 
 
 //servicePath: zk!127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183!/services/<service-name>/!0
