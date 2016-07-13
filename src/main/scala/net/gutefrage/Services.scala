@@ -1,8 +1,5 @@
 package net.gutefrage
 
-import com.twitter.finagle.Dtab
-
-
 //servicePath: zk!127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183!/services/<service-name>/!0
 //syntax:          schema!host!path!shardId
 //schema:          for server, use zk, for client, use zk2
@@ -14,30 +11,29 @@ object Services {
   //change it to your zookeeper ip and port
   val zookeeperDest = "127.0.0.1:2181"
 
-  object Dtabs {
-    val base = Dtab.read(
-      """|/zk##    => /$/com.twitter.serverset;
-         |/zk#     => /zk##/127.0.0.1:2181;
-         |/s#      => /zk#/service;
-         |/env     => /s#/local;
-         |/s       => /env;""".stripMargin)
+  /**
+    * Build a concrete path for a service announcement.
+    *
+    * @param serviceName The name under which the service should be announced
+    * @param env The environment in which the service should be announced
+    * @param zookeeperDest Zookeeper destination, e.g. 127.0.0.1:2181
+    * @return a concrete path the service can be announced on
+    */
+  def buildProviderPath(serviceName: String, env: Env, zookeeperDest: String = zookeeperDest): String = {
+    s"zk!$zookeeperDest!/service/${env.name}/$serviceName!0"
   }
 
-  private val temperatureServicePath = "temperature"
-  val temperatureServiceConsumer = buildConsumerPath(temperatureServicePath)
-  def temperatureServiceProvider(env: Env) = buildProviderPath(env, temperatureServicePath)
-
-  private val weatherServicePath = "weather"
-  val weatherServiceConsumer = buildConsumerPath(weatherServicePath)
-  def weatherServiceProvider(env: Env) = buildProviderPath(env, weatherServicePath)
-
-  def buildProviderPath(env: Env, servicePath: String, zookeeperDest: String = zookeeperDest): String = {
-    s"zk!$zookeeperDest!/service/${env.name}/$servicePath!0"
-  }
-
-  // example states you should use `zk2`, but works with `zk` as well
-  def buildConsumerPath(servicePath: String, zookeeperDest: String = zookeeperDest): String = {
-    s"zk!$zookeeperDest!/service/local/$servicePath"
+  /**
+    * Build a concrete path to consume a service
+    *
+    * @param serviceName The name under which the service is announced
+    * @param env The environment in which the service should be consumed
+    * @param zookeeperDest Zookeeper instance to look for the service, e.g. 127.0.0.1:2181
+    * @return a concrete path to lookup up a service
+    */
+  def buildConsumerPath(serviceName: String, env: Env, zookeeperDest: String = zookeeperDest): String = {
+    // example states you should use `zk2`, but works with `zk` as well
+    s"zk!$zookeeperDest!/service/{$env.name}/$serviceName"
   }
 
 }

@@ -2,9 +2,9 @@ package net.gutefrage
 
 import com.twitter.app.Flaggable
 
-
-
-
+/**
+  * Environment a service runs in.
+  */
 sealed trait Env {
   val name: String
 }
@@ -15,8 +15,8 @@ object Env {
 
   implicit val flaggableEnv = new Flaggable[Env] {
     override def parse(env: String): Env = env match {
-      case "prod" => Prod
-      case "local" => Local
+      case Prod.name => Prod
+      case Local.name => Local
     }
   }
 }
