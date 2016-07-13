@@ -31,3 +31,6 @@ libraryDependencies := libraryDependencies.value.map(_
 )
 
 fork in run := true
+
+// for the workshop
+grollHistoryRef := "workshop"
