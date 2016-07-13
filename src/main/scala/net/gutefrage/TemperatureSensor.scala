@@ -2,6 +2,7 @@ package net.gutefrage
 
 import com.twitter.app.App
 import com.twitter.conversions.time._
+import com.twitter.finagle.ThriftMux
 import com.twitter.finagle.util.DefaultTimer
 import com.twitter.util.{Await, Future}
 import net.gutefrage.temperature.thrift._
@@ -28,7 +29,8 @@ object TemperatureSensor extends App {
   }
 
   def main(): Unit = {
-    val client: TemperatureService.FutureIface = ???
+    val client: TemperatureService.FutureIface = ThriftMux.client.newIface[TemperatureService.FutureIface](
+      Services.buildConsumerPath("temperature", env()), "temperature-sensor")
 
     implicit val timer = DefaultTimer.twitter
     val randomTemp = new java.util.Random()

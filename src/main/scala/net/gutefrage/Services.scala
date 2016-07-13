@@ -33,7 +33,8 @@ object Services {
     */
   def buildConsumerPath(serviceName: String, env: Env, zookeeperDest: String = zookeeperDest): String = {
     // example states you should use `zk2`, but works with `zk` as well
-    s"zk!$zookeeperDest!/service/{$env.name}/$serviceName"
+    s"zk!$zookeeperDest!/service/${env.name}/$serviceName"
   }
+
 
 }
