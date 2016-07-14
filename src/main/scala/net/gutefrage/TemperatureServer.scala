@@ -7,6 +7,7 @@ import com.twitter.finagle._
 import com.twitter.finagle.thrift.Protocols
 import com.twitter.logging.Logger
 import com.twitter.util.{Await, Future}
+import net.gutefrage.filter.DtabLogger
 import net.gutefrage.temperature.thrift._
 import org.slf4j.bridge.SLF4JBridgeHandler
 
@@ -21,6 +22,9 @@ object TemperatureServer extends App {
   premain {
     SLF4JBridgeHandler.removeHandlersForRootLogger()
     SLF4JBridgeHandler.install()
+
+    // initialise our custom dtabs
+    Dtabs.init()
   }
 
   onExit {
@@ -61,7 +65,7 @@ object TemperatureServer extends App {
       .serveAndAnnounce(
         name = Services.buildProviderPath("temperature", env()),
         addr = s":${port()}",
-        service = finagledService
+        service = new DtabLogger andThen finagledService
       )
 
     // Keep waiting for the server and prevent the java process to exit

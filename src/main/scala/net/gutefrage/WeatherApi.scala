@@ -7,6 +7,7 @@ import com.twitter.util.Await
 import io.finch._
 import io.finch.circe._
 import io.circe.generic.auto._
+import net.gutefrage.filter.DtabLogger
 import net.gutefrage.temperature.thrift._
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
@@ -26,6 +27,9 @@ object WeatherApi extends App {
   premain {
     SLF4JBridgeHandler.removeHandlersForRootLogger()
     SLF4JBridgeHandler.install()
+
+    // initialise our custom dtabs
+    Dtabs.init()
   }
 
   onExit {
@@ -53,7 +57,7 @@ object WeatherApi extends App {
       .serveAndAnnounce(
         name = Services.buildProviderPath("weather", env()),
         addr = s":${port()}",
-        service = api.toService
+        service = new DtabLogger andThen api.toService
       )
 
     closeOnExit(server)

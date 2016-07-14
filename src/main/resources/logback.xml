@@ -9,6 +9,7 @@
     </appender>
 
     <logger name="application" level="INFO"/>
+    <logger name="dtab" level="DEBUG"/>
     <logger name="org.apache.zookeeper.ZooKeeper" level="ERROR"/>
 
     <root level="INFO">
