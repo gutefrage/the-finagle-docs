@@ -35,6 +35,30 @@ object WeatherApi extends App {
   def main(): Unit = {
     log.info(s"Starting finch api server in ${env().name}")
 
+    val client = ThriftMux.client.newIface[TemperatureService.FutureIface](
+      Services.buildConsumerPath("temperature", env()),  "weather-api-client")
+
+    /** json model */
+    case class Mean(mean: Double)
+
+    // api endpoint definition
+    val api: Endpoint[Mean] = get("weather" / "mean") {
+      client.mean().map(mean => Ok(Mean(mean)))
+    }
+
+    // start and announce the server
+    val server = Http.server
+      .withLabel("weather-api")
+      .withResponseClassifier(HttpResponseClassifier.ServerErrorsAsFailures)
+      .serveAndAnnounce(
+        name = Services.buildProviderPath("weather", env()),
+        addr = s":${port()}",
+        service = api.toService
+      )
+
+    closeOnExit(server)
+    Await.ready(server)
+
   }
 
 }
