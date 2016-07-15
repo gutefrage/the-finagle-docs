@@ -2,11 +2,13 @@ package net.gutefrage
 
 import com.twitter.app.App
 import com.twitter.finagle._
+import com.twitter.finagle.context.Contexts
 import com.twitter.finagle.http.service.HttpResponseClassifier
 import com.twitter.util.Await
 import io.finch._
 import io.finch.circe._
 import io.circe.generic.auto._
+import net.gutefrage.context.UserContext
 import net.gutefrage.filter.DtabLogger
 import net.gutefrage.temperature.thrift._
 import org.slf4j.LoggerFactory
@@ -44,11 +46,24 @@ object WeatherApi extends App {
 
     /** json model */
     case class Mean(mean: Double)
+    case class MeanForUser(mean: Double, userId: Long)
 
-    // api endpoint definition
-    val api: Endpoint[Mean] = get("weather" / "mean") {
+    // mean temperature endpoint
+    val mean: Endpoint[Mean] = get("weather" / "mean") {
       client.mean().map(mean => Ok(Mean(mean)))
     }
+
+    // user endpoint which sets a UserContext
+    val userMean: Endpoint[MeanForUser] = get("weather" / "mean" / "user" :: long) { userId: Long =>
+      val userContext = UserContext(userId)
+      Contexts.broadcast.let(UserContext, userContext) {
+        client.mean().map(mean => Ok(MeanForUser(mean, userId)))
+      }
+    }
+
+    // compose endpoints
+    // https://github.com/finagle/finch/blob/master/docs/endpoint.md#composing-endpoints
+    val api = mean :+: userMean
 
     // start and announce the server
     val server = Http.server

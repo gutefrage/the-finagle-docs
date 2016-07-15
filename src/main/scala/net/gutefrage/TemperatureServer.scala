@@ -4,9 +4,11 @@ import java.util.concurrent.atomic.AtomicLong
 
 import com.twitter.app.App
 import com.twitter.finagle._
+import com.twitter.finagle.context.Contexts
 import com.twitter.finagle.thrift.Protocols
 import com.twitter.logging.Logger
 import com.twitter.util.{Await, Future}
+import net.gutefrage.context.UserContext
 import net.gutefrage.filter.DtabLogger
 import net.gutefrage.temperature.thrift._
 import org.slf4j.bridge.SLF4JBridgeHandler
@@ -49,6 +51,9 @@ object TemperatureServer extends App {
       }
 
       override def mean(): Future[Double] = {
+        Contexts.broadcast.get(UserContext).foreach { userContext =>
+          log.info(s"Getting mean for user ${userContext.userId}")
+        }
         val n = numElements.get()
         val mean = if(n == 0L) 0.0 else sumTemperature.get() / n
         Future.value(mean)
