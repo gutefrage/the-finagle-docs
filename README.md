@@ -22,8 +22,8 @@ container
 # start mysql and zookeeper
 docker-compose up
 
-# temperature server with mysql
-sbt "runMain net.gutefrage.TemperatureServer -port 8081"
+sbt "runMain net.gutefrage.TemperatureServer -port 8081 -env local -admin.port :9081"
+sbt "runMain net.gutefrage.TemperatureServer -port 8082 -env prod -admin.port :9082"
 
 # sensor sensor
 sbt "runMain net.gutefrage.TemperatureSensor"

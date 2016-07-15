@@ -1,9 +1,9 @@
 package net.gutefrage
 
-import com.twitter.app.App
 import com.twitter.finagle._
 import com.twitter.finagle.context.Contexts
 import com.twitter.finagle.http.service.HttpResponseClassifier
+import com.twitter.server.TwitterServer
 import com.twitter.util.Await
 import io.finch._
 import io.finch.circe._
@@ -17,14 +17,14 @@ import org.slf4j.bridge.SLF4JBridgeHandler
 /**
   * Serves the mean temperature at `/weather/mean`
   */
-object WeatherApi extends App {
+object WeatherApi extends TwitterServer {
 
   import Env._
 
   val port = flag[Int]("port", 8080, "port this server should use")
   val env = flag[Env]("env", Env.Local, "environment this server runs")
 
-  val log = LoggerFactory.getLogger("application")
+  val appLog = LoggerFactory.getLogger("application")
 
   premain {
     SLF4JBridgeHandler.removeHandlersForRootLogger()
@@ -35,11 +35,11 @@ object WeatherApi extends App {
   }
 
   onExit {
-    log.info("Shutting down finch api server")
+    appLog.info("Shutting down finch api server")
   }
 
   def main(): Unit = {
-    log.info(s"Starting finch api server in ${env().name}")
+    appLog.info(s"Starting finch api server in ${env().name}")
 
     val client = ThriftMux.client.newIface[TemperatureService.FutureIface](
       "/s/temperature",  "weather-api-client")
