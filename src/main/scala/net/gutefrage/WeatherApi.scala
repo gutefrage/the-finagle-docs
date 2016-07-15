@@ -40,7 +40,7 @@ object WeatherApi extends App {
     log.info(s"Starting finch api server in ${env().name}")
 
     val client = ThriftMux.client.newIface[TemperatureService.FutureIface](
-      Services.buildConsumerPath("temperature", env()),  "weather-api-client")
+      "/s/temperature",  "weather-api-client")
 
     /** json model */
     case class Mean(mean: Double)

@@ -33,7 +33,7 @@ object TemperatureSensor extends App {
 
   def main(): Unit = {
     val client: TemperatureService.FutureIface = ThriftMux.client.newIface[TemperatureService.FutureIface](
-      Services.buildConsumerPath("temperature", env()), "temperature-sensor")
+      "/s/temperature", "temperature-sensor")
 
     implicit val timer = DefaultTimer.twitter
     val randomTemp = new java.util.Random()
