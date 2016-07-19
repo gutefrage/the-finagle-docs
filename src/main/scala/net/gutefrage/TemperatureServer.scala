@@ -2,6 +2,7 @@ package net.gutefrage
 
 import java.util.concurrent.atomic.AtomicLong
 
+import com.redis.RedisClient
 import com.twitter.finagle._
 import com.twitter.finagle.context.Contexts
 import com.twitter.finagle.thrift.Protocols
@@ -9,7 +10,7 @@ import com.twitter.logging.Logger
 import com.twitter.server.TwitterServer
 import com.twitter.util.{Await, Future}
 import net.gutefrage.context.UserContext
-import net.gutefrage.filter.DtabLogger
+import net.gutefrage.filter.{QueryCacheFilter, DtabLogger}
 import net.gutefrage.temperature.thrift._
 import org.slf4j.bridge.SLF4JBridgeHandler
 
@@ -66,13 +67,15 @@ object TemperatureServer extends TwitterServer {
       service, Protocols.binaryFactory()
     )
 
+    val redisClient = new RedisClient("localhost", 6379)
+
     // run and announce the service
     val server = ThriftMux.server
       .withLabel("temperature-service")
       .serveAndAnnounce(
         name = Services.buildProviderPath("temperature", env()),
         addr = s":${port()}",
-        service = new DtabLogger andThen finagledService
+        service = new DtabLogger andThen new QueryCacheFilter(methodsToCache=Some(Seq("mean")), redisClient) andThen finagledService
       )
 
     // Keep waiting for the server and prevent the java process to exit

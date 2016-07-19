@@ -15,3 +15,8 @@ mysql:
     - MYSQL_DATABASE=weather
     - MYSQL_USER=weather
     - MYSQL_PASSWORD=weather
+
+redis:
+  image: redis
+  ports:
+      - "6379:6379"

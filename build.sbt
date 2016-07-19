@@ -23,7 +23,8 @@ libraryDependencies ++= Seq(
   // logging
   "org.slf4j" % "jul-to-slf4j" % "1.7.7",
   "ch.qos.logback" % "logback-core" % "1.1.7",
-  "ch.qos.logback" % "logback-classic" % "1.1.7"
+  "ch.qos.logback" % "logback-classic" % "1.1.7",
+  "net.debasishg" %% "redisclient" % "3.0"
 )
 
 libraryDependencies := libraryDependencies.value.map(_
