@@ -32,6 +32,8 @@ libraryDependencies := libraryDependencies.value.map(_
     .exclude("org.slf4j", "slf4j-log4j12")
 )
 
+resolvers += "twitter-repo" at "https://maven.twttr.com"
+
 fork in run := true
 
 // for the workshop
