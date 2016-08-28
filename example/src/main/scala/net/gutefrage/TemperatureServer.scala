@@ -54,7 +54,7 @@ object TemperatureServer extends TwitterServer {
       }
 
       override def mean(): Future[Double] = {
-        Contexts.broadcast.get(UserContext).foreach { userContext =>
+        UserContext.current.foreach { userContext =>
           appLog.info(s"Getting mean for user ${userContext.userId}")
         }
         val n = numElements.get()
