@@ -12,12 +12,12 @@ case class UserContext(userId: Long)
   * @see [[com.twitter.finagle.thrift.ClientId]]
   * @see https://twitter.github.io/finagle/guide/Contexts.html
   */
-object UserContext extends Contexts.broadcast.Key[UserContext]("net.gutefrage.context.UserContext"){
+object UserContext extends Contexts.broadcast.Key[UserContext]("net.gutefrage.context.UserContext") {
 
   private val bodyLengthBytes = 8
 
   /**
-    * Returns the current request's deadline, if set.
+    * Returns the current request's UserContext, if set.
     */
   def current: Option[UserContext] = Contexts.broadcast.get(UserContext)
 
