@@ -34,3 +34,11 @@ sbt "runMain net.gutefrage.WeatherApi -port 8000"
 # ask for the mean temperature
 curl localhost:8000/weather/mean
 ```
+
+Route your requests to another environment
+
+```bash
+curl --request GET \
+  --url http://localhost:8000/weather/mean \
+  --header 'dtab-local: /env => /s#/prod' 
+```
