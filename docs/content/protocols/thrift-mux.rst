@@ -5,22 +5,22 @@ Thrift & Thrift Mux
 
 
 What is Thrift
-==============
+--------------
 
 Thrift vs ThriftMux
-===================
+-------------------
 
 Scrooge Code Generator
-======================
+----------------------
 
 Project Structure
-=================
+-----------------
 
 
 Server
-======
+------
 
 
 Client
-======
+------
 
