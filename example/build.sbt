@@ -35,6 +35,3 @@ libraryDependencies := libraryDependencies.value.map(_
 resolvers += "twitter-repo" at "https://maven.twttr.com"
 
 fork in run := true
-
-// for the workshop
-grollHistoryRef := "workshop"
