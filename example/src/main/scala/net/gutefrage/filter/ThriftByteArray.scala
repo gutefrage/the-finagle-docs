@@ -1,4 +1,4 @@
-package net.gutefrage.util
+package net.gutefrage.filter
 
 /** Credit: http://stevenskelton.ca/finagle-query-cache-with-guava/ */
 
@@ -7,7 +7,7 @@ import org.apache.commons.codec.binary.Base64
 
 class ThriftByteArray(requestOrResponse: Array[Byte]) {
   def bytesToInt(bytes: Array[Byte]): Int = java.nio.ByteBuffer.wrap(bytes).getInt
-  
+
   def requestHashKey: String = Base64.encodeBase64String(Hashing.md5.hashBytes(requestOrResponse).asBytes)
 
   def binaryProtocolMethodNameSeqId: (String, Array[Byte]) = {
@@ -32,8 +32,8 @@ class ThriftByteArray(requestOrResponse: Array[Byte]) {
     val positionMessageType = 4 + 4 + methodNameLength + 4 + 1 + 1
     requestOrResponse(positionMessageType)
   }
-  
-  
+
+
 }
 
 object ThriftByteArray {

@@ -1,11 +1,10 @@
 package net.gutefrage.filter
 
+import com.redis._
+import com.redis.serialization.Parse.Implicits._
 import com.twitter.finagle.{Service, SimpleFilter}
 import com.twitter.util.Future
-import com.redis._
-import serialization._
-import Parse.Implicits._
-import net.gutefrage.util.ThriftByteArray._
+import net.gutefrage.filter.ThriftByteArray._
 
 class QueryCacheFilter(val methodsToCache: Option[Seq[String]] = None, redisClient: RedisClient) extends SimpleFilter[Array[Byte], Array[Byte]] {
 

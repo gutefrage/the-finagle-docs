@@ -1,21 +1,26 @@
-package net.gutefrage
+package net.gutefrage.context
 
 import com.twitter.finagle._
 import com.twitter.finagle.context.Contexts
 import com.twitter.finagle.http.service.HttpResponseClassifier
 import com.twitter.server.TwitterServer
 import com.twitter.util.Await
+import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
-import io.circe.generic.auto._
-import net.gutefrage.context.UserContext
-import net.gutefrage.filter.DtabLogger
 import net.gutefrage.temperature.thrift._
+import net.gutefrage.{Dtabs, Env}
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 
 /**
-  * Serves the mean temperature at `/weather/mean`
+  * Serves the mean temperature at `/weather/mean` and a endpoint with a given user under `/weather/mean/user/:userId`
+  *
+  * Client resolving is done via [[com.twitter.finagle.Dtab]]s. To see how static resolving via a schema
+  * works, take a look at the [[net.gutefrage.basic.TemperatureSensorStatic]] implementation.
+  *
+  * @see http framework: https://github.com/finagle/finch
+  * @see json encoding: https://github.com/travisbrown/circe
   */
 object WeatherApi extends TwitterServer {
 
@@ -42,7 +47,9 @@ object WeatherApi extends TwitterServer {
     appLog.info(s"Starting finch api server in ${env().name}")
 
     val client = ThriftMux.client.newIface[TemperatureService.FutureIface](
-      "/s/temperature",  "weather-api-client")
+      dest = "/s/temperature",
+      label = "weather-api-client"
+    )
 
     /** json model */
     case class Mean(mean: Double)
@@ -54,12 +61,13 @@ object WeatherApi extends TwitterServer {
     }
 
     // user endpoint which sets a UserContext
-    val userMean: Endpoint[MeanForUser] = get("weather" / "mean" / "user" :: long) { userId: Long =>
-      val userContext = UserContext(userId)
-      Contexts.broadcast.let(UserContext, userContext) {
-        client.mean().map(mean => Ok(MeanForUser(mean, userId)))
+    val userMean: Endpoint[MeanForUser] =
+      get("weather" / "mean" / "user" :: long) { userId: Long =>
+        val userContext = UserContext(userId)
+        Contexts.broadcast.let(UserContext, userContext) {
+          client.mean().map(mean => Ok(MeanForUser(mean, userId)))
+        }
       }
-    }
 
     // compose endpoints
     // https://github.com/finagle/finch/blob/master/docs/endpoint.md#composing-endpoints
@@ -69,10 +77,9 @@ object WeatherApi extends TwitterServer {
     val server = Http.server
       .withLabel("weather-api")
       .withResponseClassifier(HttpResponseClassifier.ServerErrorsAsFailures)
-      .serveAndAnnounce(
-        name = Services.buildProviderPath("weather", env()),
+      .serve(
         addr = s":${port()}",
-        service = new DtabLogger andThen api.toService
+        service = api.toService
       )
 
     closeOnExit(server)

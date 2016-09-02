@@ -1,22 +1,67 @@
-# Example Finalge App
+# Example Finagle Applications
 
-The app consists of multiple applications that must be started.
+This example project contains various implementations of the same services.
+Each example demonstrates a different finagle feature. 
 
-- `TemperatureServer` service with thrift interface to store data and
-provide it through a thrift API
-- `TemperatureSensor` generates random data and sends it to the
-`TemperaetureServer`
-- `WeatherApi` vanilla finagle HTTP api to access weather data
-- `FinchWeatherApi` HTTP api to access weather data
+The services are in different packages. Some basic utilities are
+in the top-level package `net.gutefrage`.
 
-# Requirements
+## Requirements
 
-You need [docker-compose][] and docker to run the mysql and zookeeper
-container
+You need [docker-compose][] and docker to run the zookeeper, redis and
+mysql containers.
 
 [docker-compose](https://docs.docker.com/compose/install/)
 
-# Start the application
+Start them with
+
+```
+docker-compose up
+```
+
+## Starting a service
+
+Each service has some basic parameters you should set
+
+* `-port`: services binds to this port
+  Example `-port 8080`
+* `-env`: environment to start. `local` and `prod` are available. This necessary to demonstrate some features.
+  Example `-env local`
+* `admin.port`: used by the TwitterServer implementation to provide an admin interface. The interface is available
+  at `localhost:<admin.port>/admin`
+  Example: `-admin.port :9081`
+
+An example service start looks like this
+
+```
+sbt "runMain net.gutefrage.basic.TemperatureServer -port 8081 -env local -admin.port :9081"
+```
+
+**basic** is the feature package. You can use sbts auto-completion feature to discover available
+main classes 
+
+```
+sbt
+> run net
+(press tab-tab)
+> runMain net.gutefrage.
+  net.gutefrage.basic.TemperatureSensorDtabs    net.gutefrage.basic.TemperatureSensorStatic   net.gutefrage.basic.TemperatureServer
+  net.gutefrage.basic.WeatherApi                net.gutefrage.context.TemperatureServer       net.gutefrage.context.WeatherApi 
+```
+
+# Example Services
+
+## Basic
+
+This packages contains a complete system implemented in a very simplistic way. The `TemperatureServer`
+and `WeatherApi` come in a single version. The _sensor_ is implemented with two different client
+resolving techniques
+
+- Static resolving 
+- Dynamic resolving per request with Dtabs
+
+To start the complete system
+
 
 ```
 # start mysql and zookeeper
@@ -42,3 +87,11 @@ curl --request GET \
   --url http://localhost:8000/weather/mean \
   --header 'dtab-local: /env => /s#/prod' 
 ```
+
+## Context
+
+TODO
+
+## Filter
+
+TODO
