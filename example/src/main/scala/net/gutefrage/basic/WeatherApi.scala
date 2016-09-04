@@ -1,17 +1,14 @@
 package net.gutefrage.basic
 
 import com.twitter.finagle._
-import com.twitter.finagle.context.Contexts
 import com.twitter.finagle.http.service.HttpResponseClassifier
 import com.twitter.server.TwitterServer
 import com.twitter.util.Await
 import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
-import net.gutefrage.context.UserContext
-import net.gutefrage.filter.DtabLogger
 import net.gutefrage.temperature.thrift._
-import net.gutefrage.{Dtabs, Env, Services}
+import net.gutefrage.{Dtabs, Env}
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 
