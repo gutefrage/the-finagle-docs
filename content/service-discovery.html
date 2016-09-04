@@ -87,17 +87,14 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="finagle-util.html">Finagle Util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="protocols/index.html">Protocols</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Service Discovery</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Service Discovery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#resolver-names">Resolver &amp; Names</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#zookeeper">Zookeeper</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#twitter-serverset">Twitter ServerSet</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#announcing">Announcing</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#resolver-names">Resolver &amp; Names</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#static-resolving">Static Resolving</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dtabs-dynamic-request-routing">Dtabs - Dynamic Request Routing</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#static-resolving">Static Resolving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dtabs-dynamic-request-routing">Dtabs - Dynamic Request Routing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contexts.html">Contexts</a></li>
@@ -151,23 +148,52 @@
 <p class="first admonition-title">Caution</p>
 <p class="last">This section is under construction.</p>
 </div>
-<div class="section" id="zookeeper">
-<h2>Zookeeper<a class="headerlink" href="#zookeeper" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="twitter-serverset">
-<h3>Twitter ServerSet<a class="headerlink" href="#twitter-serverset" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="announcing">
-<h3>Announcing<a class="headerlink" href="#announcing" title="Permalink to this headline">¶</a></h3>
-</div>
-</div>
+<p>Finagle provides different features to resolve client addresses. All implementations take care of the inherent
+complexity of a distributed system.</p>
+<p>This section provides a short explanation and some examples for demonstration.</p>
 <div class="section" id="resolver-names">
 <h2>Resolver &amp; Names<a class="headerlink" href="#resolver-names" title="Permalink to this headline">¶</a></h2>
+<p>Finagle uses <em>Names</em> to identify network locations. The <a class="reference external" href="http://twitter.github.io/finagle/guide/Names.html">Names and Naming</a> section on the finagle documentation
+provides a comprehensible introduction.</p>
+</div>
+<div class="section" id="zookeeper">
+<h2>Zookeeper<a class="headerlink" href="#zookeeper" title="Permalink to this headline">¶</a></h2>
+<p>Finagle has first class <a class="reference external" href="https://zookeeper.apache.org/">Zookeeper</a> support. Both static and dynamic resolving with dtabs make use of zookeeper
+to manage service locations. The core data structure for this purpose is the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a>.</p>
+<p>There two schema implementations <code class="docutils literal"><span class="pre">zk</span></code> (used to announce a service) and <code class="docutils literal"><span class="pre">zk2</span></code> ( used to resolve a service ). Both
+use the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a> internally for persisting, updating or resolving service network locations. Resolving is describe
+in more detail in the <a class="reference internal" href="#static-resolving">Static Resolving</a> section.</p>
+<div class="section" id="announcing">
+<h3>Announcing<a class="headerlink" href="#announcing" title="Permalink to this headline">¶</a></h3>
+<p>Protocols that support implementing a server (like Thrift or Http) usually provide a <code class="docutils literal"><span class="pre">serveAndAnnounce</span></code> method,
+which gives the ability to announce the service under a given <em>Name</em>.</p>
+<p>The service <em>Name</em> string looks similar to the one used for resolving ( see <cite>Static Resolving</cite> ):</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>schema ! name
+</pre></div>
+</div>
+<p>For the <em>Zookeeper</em> schema the <code class="docutils literal"><span class="pre">name</span></code> parameter can be extend:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>schema ! host ! path ! shardId
+</pre></div>
+</div>
+<p>The shardId can always be set to zero. The Finagle documentation says it&#8217;s only used for a few services
+at twitter.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">server</span> <span class="k">=</span> <span class="nc">ThriftMux</span><span class="o">.</span><span class="n">server</span>
+  <span class="o">.</span><span class="n">serveAndAnnounce</span><span class="o">(</span>
+    <span class="n">name</span> <span class="k">=</span> <span class="s">s&quot;zk!127.0.0.1:2181!/path/to/service!0&quot;</span><span class="o">,</span>
+    <span class="n">addr</span> <span class="k">=</span> <span class="s">&quot;:8000&quot;</span><span class="o">,</span>
+    <span class="n">service</span> <span class="k">=</span> <span class="n">service</span>
+  <span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <div class="section" id="static-resolving">
-<h3>Static Resolving<a class="headerlink" href="#static-resolving" title="Permalink to this headline">¶</a></h3>
+<h2>Static Resolving<a class="headerlink" href="#static-resolving" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
 </div>
 <div class="section" id="dtabs-dynamic-request-routing">
-<h3>Dtabs - Dynamic Request Routing<a class="headerlink" href="#dtabs-dynamic-request-routing" title="Permalink to this headline">¶</a></h3>
-</div>
+<h2>Dtabs - Dynamic Request Routing<a class="headerlink" href="#dtabs-dynamic-request-routing" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
 </div>
 </div>
 
