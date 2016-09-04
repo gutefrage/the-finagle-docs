@@ -67,14 +67,17 @@ To start the complete system
 # start mysql and zookeeper
 docker-compose up
 
-sbt "runMain net.gutefrage.TemperatureServer -port 8081 -env local -admin.port :9081"
-sbt "runMain net.gutefrage.TemperatureServer -port 8082 -env prod -admin.port :9082"
+sbt "runMain net.gutefrage.basic.TemperatureServer -port 8081 -env local -admin.port :9081"
+sbt "runMain net.gutefrage.basic.TemperatureServer -port 8082 -env prod -admin.port :9082"
 
-# sensor sensor
-sbt "runMain net.gutefrage.TemperatureSensor"
+# sensor sending to local. Static client resolving
+sbt "runMain net.gutefrage.basic.TemperatureSensorStatic -env local -admin.port :9181"
+
+# sensor sending to prod by routing request via dtabs
+sbt "runMain net.gutefrage.basic.TemperatureSensorDtabs -dtab /env=>/s#/prod -admin.port :9182"
 
 # http api
-sbt "runMain net.gutefrage.WeatherApi -port 8000"
+sbt "runMain net.gutefrage.basic.WeatherApi -port 8000 -admin.port :9080"
 
 # ask for the mean temperature
 curl localhost:8000/weather/mean
@@ -87,6 +90,21 @@ curl --request GET \
   --url http://localhost:8000/weather/mean \
   --header 'dtab-local: /env => /s#/prod' 
 ```
+
+### Admin UI
+
+Each service has its own admin interface. 
+
+| Service | URL                  |
+| ------- | -------------------- |
+| Server (local)  | http://localhost:9081/admin |
+| Server (prod)   | http://localhost:9082/admin |
+| Sensor (static) | http://localhost:9181/admin |
+| Sensor (dtab)   | http://localhost:9182/admin |
+| Http API        | http://localhost:9080/admin |
+
+You can change the ports with the `admin.port` flag.
+
 
 ## Context
 

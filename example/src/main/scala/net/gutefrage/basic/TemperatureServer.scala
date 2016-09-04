@@ -69,7 +69,7 @@ object TemperatureServer extends TwitterServer {
       .withLabel("temperature-service")
       .serveAndAnnounce(
         // schema ! host ! path ! shardId
-        name = s"zk!127.0.0.1:2181!/service/${env.name}/temperature!0",
+        name = s"zk!127.0.0.1:2181!/service/${env().name}/temperature!0",
         // bind to local address
         addr = s":${port()}",
         service = finagledService

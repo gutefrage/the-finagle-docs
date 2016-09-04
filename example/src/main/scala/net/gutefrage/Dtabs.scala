@@ -7,8 +7,8 @@ import com.twitter.finagle.Dtab
   */
 object Dtabs {
 
-  def init(): Unit = {
-    Dtab.base = base
+  def init(additionalDtab: Dtab = Dtab.empty): Unit = {
+    Dtab.base = base ++ additionalDtab
   }
 
   /**
