@@ -7,7 +7,6 @@ import com.twitter.server.TwitterServer
 import com.twitter.util.{Await, Future}
 import net.gutefrage.{Dtabs, Env}
 import net.gutefrage.temperature.thrift._
-import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 
 /**
