@@ -91,9 +91,34 @@
 <li class="toctree-l2"><a class="reference internal" href="#resolver-names">Resolver &amp; Names</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#zookeeper">Zookeeper</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#announcing">Announcing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#static-resolving">Static Resolving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#static-resolving">Static Resolving</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#inet-dns">Inet (DNS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scheme">Scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#fixed-inet-dns">Fixed Inet (DNS)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Scheme</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#zookeeper-zk">Zookeeper (zk)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#zookeeper-zk2">Zookeeper (zk2)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mdns-mdns">MDNS (mdns)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mdns-local">MDNS (local)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jmdns-jmdns">JmDNS (jmdns)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#dtabs-dynamic-request-routing">Dtabs - Dynamic Request Routing</a></li>
 </ul>
 </li>
@@ -160,7 +185,7 @@ provides a comprehensible introduction.</p>
 <h2>Zookeeper<a class="headerlink" href="#zookeeper" title="Permalink to this headline">¶</a></h2>
 <p>Finagle has first class <a class="reference external" href="https://zookeeper.apache.org/">Zookeeper</a> support. Both static and dynamic resolving with dtabs make use of zookeeper
 to manage service locations. The core data structure for this purpose is the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a>.</p>
-<p>There two schema implementations <code class="docutils literal"><span class="pre">zk</span></code> (used to announce a service) and <code class="docutils literal"><span class="pre">zk2</span></code> ( used to resolve a service ). Both
+<p>There two scheme implementations <code class="docutils literal"><span class="pre">zk</span></code> (used to announce a service) and <code class="docutils literal"><span class="pre">zk2</span></code> ( used to resolve a service ). Both
 use the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a> internally for persisting, updating or resolving service network locations. Resolving is describe
 in more detail in the <a class="reference internal" href="#static-resolving">Static Resolving</a> section.</p>
 <div class="section" id="announcing">
@@ -168,16 +193,21 @@ in more detail in the <a class="reference internal" href="#static-resolving">Sta
 <p>Protocols that support implementing a server (like Thrift or Http) usually provide a <code class="docutils literal"><span class="pre">serveAndAnnounce</span></code> method,
 which gives the ability to announce the service under a given <em>Name</em>.</p>
 <p>The service <em>Name</em> string looks similar to the one used for resolving ( see <cite>Static Resolving</cite> ):</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>schema ! name
+<div class="highlight-bash"><div class="highlight"><pre><span></span>scheme!name
 </pre></div>
 </div>
-<p>For the <em>Zookeeper</em> schema the <code class="docutils literal"><span class="pre">name</span></code> parameter is extended to:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>schema ! host ! path ! shardId
+<p>For the <em>Zookeeper</em> scheme the <code class="docutils literal"><span class="pre">name</span></code> parameter is extended to:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>scheme!host!path!shardId
 </pre></div>
 </div>
 <p>The shardId can always be set to zero. The Finagle documentation says it&#8217;s only used for a few services
 at twitter.</p>
-<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">server</span> <span class="k">=</span> <span class="nc">ThriftMux</span><span class="o">.</span><span class="n">server</span>
+</div>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p>Announcing a ThriftMux server.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">service</span><span class="k">:</span> <span class="kt">Service</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">Byte</span><span class="o">]</span>, <span class="kt">Array</span><span class="o">[</span><span class="kt">Byte</span><span class="o">]]</span> <span class="k">=</span> <span class="o">???</span>
+<span class="k">val</span> <span class="n">server</span> <span class="k">=</span> <span class="nc">ThriftMux</span><span class="o">.</span><span class="n">server</span>
   <span class="o">.</span><span class="n">serveAndAnnounce</span><span class="o">(</span>
     <span class="n">name</span> <span class="k">=</span> <span class="s">s&quot;zk!127.0.0.1:2181!/path/to/service!0&quot;</span><span class="o">,</span>
     <span class="n">addr</span> <span class="k">=</span> <span class="s">&quot;:8000&quot;</span><span class="o">,</span>
@@ -189,7 +219,101 @@ at twitter.</p>
 </div>
 <div class="section" id="static-resolving">
 <h2>Static Resolving<a class="headerlink" href="#static-resolving" title="Permalink to this headline">¶</a></h2>
+<p>The first option to create a client connection is by giving a static location.
+The location string has the shape</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>scheme!arg
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">Resolver.eval</span></code> will parse this directly to a <code class="docutils literal"><span class="pre">Name.Bound</span></code>. Thus no dynamic request routing is possible.
+Finagle ships with a set of predefined schemes you can use.</p>
+<div class="section" id="inet-dns">
+<h3>Inet (DNS)<a class="headerlink" href="#inet-dns" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">inet</span></code> scheme uses DNS for resolving network addresses. It&#8217;s also the default scheme, which means that
+if you leave out a <code class="docutils literal"><span class="pre">scheme</span></code> in the location string, the <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-core/src/main/scala/com/twitter/finagle/InetResolver.scala">DnsResolver</a> is used.</p>
+<div class="section" id="scheme">
+<h4>Scheme<a class="headerlink" href="#scheme" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>inet!www.scala-lang.org:80
+</pre></div>
+</div>
+<p>Because <code class="docutils literal"><span class="pre">inet</span></code> is the default scheme you can also write</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>www.scala-lang.org:80
+</pre></div>
+</div>
+</div>
+<div class="section" id="example">
+<h4>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.Http</span>
+<span class="k">val</span> <span class="n">client</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">.</span><span class="n">newService</span><span class="o">(</span><span class="s">&quot;www.scala-lang.org:80&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="fixed-inet-dns">
+<h3>Fixed Inet (DNS)<a class="headerlink" href="#fixed-inet-dns" title="Permalink to this headline">¶</a></h3>
+<p>InetResolver that caches all successful DNS lookups indefinitely and does not poll for updates.
+Clients should only use this in scenarios where host -&gt; IP map changes do not occur.</p>
+<div class="section" id="id2">
+<h4>Scheme<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>fixedinet!www.scala-lang.org:80
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="zookeeper-zk">
+<h3>Zookeeper (zk)<a class="headerlink" href="#zookeeper-zk" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The Finagle documentation recommend using the zk2 scheme. See <a class="reference internal" href="#zookeeper-zk2">Zookeeper (zk2)</a></p>
+</div>
+<p>The <code class="docutils literal"><span class="pre">zk</span></code> scheme resolves a <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a> from the given zookeeper instance and path.</p>
+<p>The implementation can be found here: <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-serversets/src/main/scala/com/twitter/finagle/zookeeper/ZkResolver.scala">ZkResolver</a>.</p>
+<div class="section" id="id3">
+<h4>Scheme<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>zk!zookeeper-host!path
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h4>Example<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.Http</span>
+<span class="k">val</span> <span class="n">client</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">.</span><span class="n">newService</span><span class="o">(</span><span class="s">&quot;zk!127.0.0.1:2181!/path/to/service&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="zookeeper-zk2">
+<h3>Zookeeper (zk2)<a class="headerlink" href="#zookeeper-zk2" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">zk2</span></code> scheme resolves a <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a> from the given zookeeper instance and path.</p>
+<p>The implementation can be found here: <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-serversets/src/main/scala/com/twitter/finagle/serverset2/Zk2Resolver.scala">Zk2Resolver</a>.</p>
+<div class="section" id="id5">
+<h4>Scheme<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>zk2!zookeeper-host!path
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h4>Example<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.Http</span>
+<span class="k">val</span> <span class="n">client</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">.</span><span class="n">newService</span><span class="o">(</span><span class="s">&quot;zk2!127.0.0.1:2181!/path/to/service&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="mdns-mdns">
+<h3>MDNS (mdns)<a class="headerlink" href="#mdns-mdns" title="Permalink to this headline">¶</a></h3>
 <p>TODO</p>
+<p>The implementation can be found here: <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-mdns/src/main/scala/com/twitter/finagle/mdns/MDNS.scala">MDNS</a></p>
+</div>
+<div class="section" id="mdns-local">
+<h3>MDNS (local)<a class="headerlink" href="#mdns-local" title="Permalink to this headline">¶</a></h3>
+<p>TODO</p>
+<p>The implementation can be found here: <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-mdns/src/main/scala/com/twitter/finagle/mdns/Local.scala">Local</a></p>
+</div>
+<div class="section" id="jmdns-jmdns">
+<h3>JmDNS (jmdns)<a class="headerlink" href="#jmdns-jmdns" title="Permalink to this headline">¶</a></h3>
+<p>TODO</p>
+<p>The implementation can be found here: <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-mdns/src/main/scala/com/twitter/finagle/mdns/JmDNS.scala">JmDNS</a>.</p>
+</div>
 </div>
 <div class="section" id="dtabs-dynamic-request-routing">
 <h2>Dtabs - Dynamic Request Routing<a class="headerlink" href="#dtabs-dynamic-request-routing" title="Permalink to this headline">¶</a></h2>
