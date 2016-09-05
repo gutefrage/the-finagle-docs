@@ -46,7 +46,7 @@ The service *Name* string looks similar to the one used for resolving ( see `Sta
 
     schema ! name
 
-For the *Zookeeper* schema the ``name`` parameter can be extend:
+For the *Zookeeper* schema the ``name`` parameter is extended to:
 
 .. code-block:: bash
 
