@@ -1,12 +1,12 @@
 package net.gutefrage.basic
 
-import com.twitter.app.App
 import com.twitter.conversions.time._
 import com.twitter.finagle.ThriftMux
 import com.twitter.finagle.util.DefaultTimer
+import com.twitter.server.TwitterServer
 import com.twitter.util.{Await, Future}
-import net.gutefrage.temperature.thrift._
 import net.gutefrage.{Dtabs, Env}
+import net.gutefrage.temperature.thrift._
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 
@@ -15,9 +15,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
   *
   * Resolving is performed via a static schema lookup. Zookeeper will be used as a schema.
   */
-object TemperatureSensorStatic extends App {
-  val log = LoggerFactory.getLogger("application")
-
+object TemperatureSensorStatic extends TwitterServer {
   val env = flag[Env]("env", Env.Local, "environment this server runs")
 
   premain {
