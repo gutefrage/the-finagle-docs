@@ -34,7 +34,7 @@ object TemperatureSensorStatic extends TwitterServer {
     // create a thrift client and resolve address via dtabs
     val client = ThriftMux.client.newIface[TemperatureService.FutureIface](
       // schema ! args
-      dest = s"zk2!127.0.0.1:2181/service/${env().name}/temperature",
+      dest = s"zk2!127.0.0.1:2181!/service/${env().name}/temperature",
       label = "temperature-sensor"
     )
 
