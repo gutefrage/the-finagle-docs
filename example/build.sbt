@@ -4,7 +4,7 @@ organization := "net.gutefrage"
 
 scalaVersion  := "2.11.7"
 
-val finagleVersion = "6.36.0"
+val finagleVersion = "6.37.0"
 val finchVersion = "0.10.0"
 
 libraryDependencies ++= Seq(
@@ -24,6 +24,7 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "jul-to-slf4j" % "1.7.7",
   "ch.qos.logback" % "logback-core" % "1.1.7",
   "ch.qos.logback" % "logback-classic" % "1.1.7",
+  // TODO remove and use finagle-redis
   "net.debasishg" %% "redisclient" % "3.0"
 )
 
