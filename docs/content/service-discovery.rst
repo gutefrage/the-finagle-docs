@@ -20,19 +20,10 @@ provides a comprehensible introduction.
 
 .. _Names and Naming: http://twitter.github.io/finagle/guide/Names.html
 
-Zookeeper
-=========
-
-Finagle has first class `Zookeeper`_ support. Both static and dynamic resolving with dtabs make use of zookeeper
-to manage service locations. The core data structure for this purpose is the `Serverset`_.
-
-There two scheme implementations ``zk`` (used to announce a service) and ``zk2`` ( used to resolve a service ). Both
-use the `Serverset`_ internally for persisting, updating or resolving service network locations. Resolving is describe
-in more detail in the `Static Resolving`_ section.
-
 
 Announcing
-----------
+==========
+
 
 Protocols that support implementing a server (like Thrift or Http) usually provide a ``serveAndAnnounce`` method,
 which gives the ability to announce the service under a given *Name*.
@@ -42,6 +33,17 @@ The service *Name* string looks similar to the one used for resolving ( see `Sta
 .. code-block:: bash
 
     scheme!name
+
+Zookeeper
+---------
+
+Finagle has first class `Zookeeper`_ support. Both static and dynamic resolving with dtabs make use of zookeeper
+to manage service locations. The core data structure for this purpose is the `Serverset`_.
+
+There two scheme implementations ``zk`` (used to announce a service) and ``zk2`` ( used to resolve a service ). Both
+use the `Serverset`_ internally for persisting, updating or resolving service network locations. Resolving is describe
+in more detail in the `Static Resolving`_ section.
+
 
 For the *Zookeeper* scheme the ``name`` parameter is extended to:
 
