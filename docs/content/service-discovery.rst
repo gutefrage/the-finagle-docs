@@ -54,6 +54,29 @@ For the *Zookeeper* scheme the ``name`` parameter is extended to:
 The shardId can always be set to zero. The Finagle documentation says it's only used for a few services
 at twitter.
 
+Example:
+
+.. code-block:: bash
+
+    zk!127.0.0.1:2181!/path/to/service!0
+
+
+MDNS
+----
+
+For the *MDNS* scheme the ``name`` parameter is extended to:
+
+.. code-block:: bash
+
+    scheme![name]._[group]._tcp.local.
+
+Example:
+
+.. code-block:: bash
+
+    mdns!myservice._twitter._tcp.local.
+
+The implementation can be found here: `MDNS`_
 
 Examples
 --------
