@@ -6,6 +6,7 @@ scalaVersion  := "2.11.7"
 
 val finagleVersion = "6.37.0"
 val finchVersion = "0.10.0"
+val finatraVersion = "2.4.0"
 
 libraryDependencies ++= Seq(
   "com.twitter" %% "scrooge-core" % "4.7.0",
@@ -16,6 +17,8 @@ libraryDependencies ++= Seq(
   "com.twitter" %% "finagle-http" % finagleVersion,
   "com.twitter" %% "finagle-thriftmux"  % finagleVersion,
   "com.twitter" %% "twitter-server"  % "1.21.0",
+  "com.twitter" %% "finatra-http" % finatraVersion,
+  "com.twitter" %% "finatra-http" % finatraVersion % "test" classifier "tests",
   "com.github.finagle" %% "finch-core" % finchVersion,
   "com.github.finagle" %% "finch-circe" % finchVersion,
   // json
