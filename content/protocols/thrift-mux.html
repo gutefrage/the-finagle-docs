@@ -139,15 +139,111 @@
 </div>
 <div class="section" id="what-is-thrift">
 <h2>What is Thrift<a class="headerlink" href="#what-is-thrift" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>&#8220;Apache Thrift allows you to define data types and service interfaces in a simple definition file.
+Taking that file as input, the compiler generates code to be used to easily build RPC clients and
+servers that communicate seamlessly across programming languages. Instead of writing a load of
+boilerplate code to serialize and transport your objects and invoke remote methods, you can get
+right down to business.&#8221; - <a class="reference external" href="https://thrift.apache.org/">Apache Thrift</a></div></blockquote>
+<p>Finagle provides its own code generator <a class="reference external" href="https://scrooge">Scrooge</a> to generate Thrift encoders and decoders, but also
+the necessary finagle boilerplate create server and clients. The <a class="reference internal" href="#scrooge-code-generator">Scrooge Code Generator</a> section
+describes the setup in more detail.</p>
 </div>
 <div class="section" id="thrift-vs-thriftmux">
 <h2>Thrift vs ThriftMux<a class="headerlink" href="#thrift-vs-thriftmux" title="Permalink to this headline">¶</a></h2>
+<p>Finagle provides two thrift protocol implementations. A standard <code class="docutils literal"><span class="pre">Thrift</span></code> protocol that is
+compatible with other Thrift server and clients. And an improved <code class="docutils literal"><span class="pre">ThriftMux</span></code> implementation
+that allows multiplexing one single connections.</p>
+<p>If you have a heterogeneous environment the standard <code class="docutils literal"><span class="pre">Thrift</span></code> protocol should be used. For
+pure finagle environments the <code class="docutils literal"><span class="pre">ThriftMux</span></code> protocol is recommended as it provides better
+performance while using less resources.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The list of differences is not complete.</p>
+</div>
+</div>
+<div class="section" id="distribute-thrift-definitions">
+<h2>Distribute Thrift Definitions<a class="headerlink" href="#distribute-thrift-definitions" title="Permalink to this headline">¶</a></h2>
+<p>A major benefit when using thrift is that you don&#8217;t have to distribute binaries ( class files or actual code ),
+but language agnostic thrift files. How you distribute these files depends on your service structure,
+build process and infrastructure.</p>
+<p>At gutefrage every service contains two sbt submodules:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">server</span></code> - the actual implementation of the service</li>
+<li><code class="docutils literal"><span class="pre">api</span></code> - a package containing the thrift files and the service name</li>
+</ul>
+<p>Depending on a service means depending on the <code class="docutils literal"><span class="pre">api</span></code> package. Each service generates the necessary
+code with Scrooge to instantiate service clients. The next section describes the Scrooge setup.</p>
 </div>
 <div class="section" id="scrooge-code-generator">
 <h2>Scrooge Code Generator<a class="headerlink" href="#scrooge-code-generator" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://scrooge">Scrooge</a> generates the necessary services stubs and finagle boilerplate to implement and
+serve thrift services. Activate it by adding this to your <code class="docutils literal"><span class="pre">plugins.sbt</span></code>:</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="n">resolvers</span> <span class="o">+=</span> <span class="s">&quot;twitter-repo&quot;</span> <span class="n">at</span> <span class="s">&quot;https://maven.twttr.com&quot;</span>
+
+<span class="n">addSbtPlugin</span><span class="o">(</span><span class="s">&quot;com.twitter&quot;</span> <span class="o">%%</span> <span class="s">&quot;scrooge-sbt-plugin&quot;</span> <span class="o">%</span> <span class="s">&quot;4.9.0&quot;</span><span class="o">)</span>
+</pre></div>
 </div>
-<div class="section" id="project-structure">
-<h2>Project Structure<a class="headerlink" href="#project-structure" title="Permalink to this headline">¶</a></h2>
+<p>Put your thrift files in <code class="docutils literal"><span class="pre">src/main/thrift</span></code>. The thrift sbt-plugin will pick the up and
+generate the code when you run <code class="docutils literal"><span class="pre">sbt</span> <span class="pre">compile</span></code>.</p>
+<div class="section" id="include-thrift-files">
+<h3>Include Thrift Files<a class="headerlink" href="#include-thrift-files" title="Permalink to this headline">¶</a></h3>
+<p>Scrooge can extract <code class="docutils literal"><span class="pre">thrift</span></code> files from dependencies when added to the <code class="docutils literal"><span class="pre">scroogeThriftDependencies</span></code>
+setting. This autoplugin adds <code class="docutils literal"><span class="pre">thrift</span></code> files to the created jar.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * This plugin adds the thrift files to the packaged jar.</span>
+<span class="cm"> */</span>
+<span class="k">object</span> <span class="nc">ApiThriftSourcesPlugin</span> <span class="k">extends</span> <span class="nc">AutoPlugin</span> <span class="o">{</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="k">requires</span> <span class="k">=</span> <span class="nc">GFApiPlugin</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">trigger</span> <span class="k">=</span> <span class="nc">AllRequirements</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">projectSettings</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Setting</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+    <span class="c1">// add thrift files to output jar</span>
+    <span class="n">mappings</span> <span class="n">in</span> <span class="o">(</span><span class="nc">Compile</span><span class="o">,</span> <span class="n">packageBin</span><span class="o">)</span> <span class="o">++=</span> <span class="o">{</span>
+      <span class="o">(</span><span class="n">sourceDirectory</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="s">&quot;main&quot;</span> <span class="o">/</span> <span class="s">&quot;thrift&quot;</span><span class="o">).</span><span class="n">listFiles</span><span class="o">()</span>
+        <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">f</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">getName</span> <span class="n">endsWith</span> <span class="s">&quot;.thrift&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">file</span> <span class="k">=&gt;</span>
+          <span class="n">file</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">s&quot;com/yourcompany/server/&lt;servicename&gt;/thrift/</span><span class="si">${</span><span class="n">file</span><span class="o">.</span><span class="n">getName</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
+        <span class="o">}</span>
+        <span class="o">.</span><span class="n">toSeq</span>
+    <span class="o">}</span>
+  <span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="add-thrift-dependencies-automatically">
+<h3>Add Thrift Dependencies automatically<a class="headerlink" href="#add-thrift-dependencies-automatically" title="Permalink to this headline">¶</a></h3>
+<p>This auto plugin provides a basic way to add <code class="docutils literal"><span class="pre">libraryDependencies</span></code> coming from a certain
+organization to the <code class="docutils literal"><span class="pre">scroogeThriftDependencies</span></code>. Scrooge will then extract the <code class="docutils literal"><span class="pre">thrift</span></code>
+files from these dependencies and process them.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">sbt._</span>
+<span class="k">import</span> <span class="nn">com.twitter.scrooge.ScroogeSBT</span>
+
+<span class="k">object</span> <span class="nc">AddThriftDependencies</span> <span class="k">extends</span> <span class="nc">AutoPlugin</span> <span class="o">{</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="k">requires</span> <span class="k">=</span> <span class="nc">ScroogeSBT</span>
+  <span class="k">override</span> <span class="k">def</span> <span class="n">trigger</span> <span class="k">=</span> <span class="nc">AllRequirements</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">projectSettings</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+    <span class="c1">// add library dependencies to scrooge</span>
+    <span class="n">scroogeThriftDependencies</span> <span class="n">in</span> <span class="nc">Compile</span> <span class="o">:=</span> <span class="o">{</span>
+      <span class="c1">// splits (2.10)(.x)</span>
+      <span class="k">val</span> <span class="n">pattern</span> <span class="k">=</span> <span class="s">&quot;(\\d*\\.{1}\\d*)(.*)&quot;</span><span class="o">.</span><span class="n">r</span>
+      <span class="k">val</span> <span class="n">pattern</span><span class="o">(</span><span class="n">version</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=</span> <span class="n">scalaVersion</span><span class="o">.</span><span class="n">value</span>
+
+      <span class="c1">// adds all services in library dependencies as thrift dependencies</span>
+      <span class="n">libraryDependencies</span><span class="o">.</span><span class="n">value</span>
+        <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">organization</span> <span class="n">startsWith</span> <span class="s">&quot;com.yourcompany.service&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">version</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="server">
 <h2>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h2>

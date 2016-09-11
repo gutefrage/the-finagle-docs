@@ -89,8 +89,9 @@
 <li class="toctree-l1"><a class="reference internal" href="protocols/index.html">Protocols</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Service Discovery</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#resolver-names">Resolver &amp; Names</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#zookeeper">Zookeeper</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#announcing">Announcing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#announcing">Announcing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#zookeeper">Zookeeper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mdns">MDNS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
@@ -181,27 +182,43 @@ complexity of a distributed system.</p>
 <p>Finagle uses <em>Names</em> to identify network locations. The <a class="reference external" href="http://twitter.github.io/finagle/guide/Names.html">Names and Naming</a> section on the finagle documentation
 provides a comprehensible introduction.</p>
 </div>
-<div class="section" id="zookeeper">
-<h2>Zookeeper<a class="headerlink" href="#zookeeper" title="Permalink to this headline">¶</a></h2>
-<p>Finagle has first class <a class="reference external" href="https://zookeeper.apache.org/">Zookeeper</a> support. Both static and dynamic resolving with dtabs make use of zookeeper
-to manage service locations. The core data structure for this purpose is the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a>.</p>
-<p>There two scheme implementations <code class="docutils literal"><span class="pre">zk</span></code> (used to announce a service) and <code class="docutils literal"><span class="pre">zk2</span></code> ( used to resolve a service ). Both
-use the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a> internally for persisting, updating or resolving service network locations. Resolving is describe
-in more detail in the <a class="reference internal" href="#static-resolving">Static Resolving</a> section.</p>
 <div class="section" id="announcing">
-<h3>Announcing<a class="headerlink" href="#announcing" title="Permalink to this headline">¶</a></h3>
+<h2>Announcing<a class="headerlink" href="#announcing" title="Permalink to this headline">¶</a></h2>
 <p>Protocols that support implementing a server (like Thrift or Http) usually provide a <code class="docutils literal"><span class="pre">serveAndAnnounce</span></code> method,
 which gives the ability to announce the service under a given <em>Name</em>.</p>
 <p>The service <em>Name</em> string looks similar to the one used for resolving ( see <cite>Static Resolving</cite> ):</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>scheme!name
 </pre></div>
 </div>
+<div class="section" id="zookeeper">
+<h3>Zookeeper<a class="headerlink" href="#zookeeper" title="Permalink to this headline">¶</a></h3>
+<p>Finagle has first class <a class="reference external" href="https://zookeeper.apache.org/">Zookeeper</a> support. Both static and dynamic resolving with dtabs make use of zookeeper
+to manage service locations. The core data structure for this purpose is the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a>.</p>
+<p>There two scheme implementations <code class="docutils literal"><span class="pre">zk</span></code> (used to announce a service) and <code class="docutils literal"><span class="pre">zk2</span></code> ( used to resolve a service ). Both
+use the <a class="reference external" href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">Serverset</a> internally for persisting, updating or resolving service network locations. Resolving is describe
+in more detail in the <a class="reference internal" href="#static-resolving">Static Resolving</a> section.</p>
 <p>For the <em>Zookeeper</em> scheme the <code class="docutils literal"><span class="pre">name</span></code> parameter is extended to:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>scheme!host!path!shardId
 </pre></div>
 </div>
 <p>The shardId can always be set to zero. The Finagle documentation says it&#8217;s only used for a few services
 at twitter.</p>
+<p>Example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>zk!127.0.0.1:2181!/path/to/service!0
+</pre></div>
+</div>
+</div>
+<div class="section" id="mdns">
+<h3>MDNS<a class="headerlink" href="#mdns" title="Permalink to this headline">¶</a></h3>
+<p>For the <em>MDNS</em> scheme the <code class="docutils literal"><span class="pre">name</span></code> parameter is extended to:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>scheme!<span class="o">[</span>name<span class="o">]</span>._<span class="o">[</span>group<span class="o">]</span>._tcp.local.
+</pre></div>
+</div>
+<p>Example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>mdns!myservice._twitter._tcp.local.
+</pre></div>
+</div>
+<p>The implementation can be found here: <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-mdns/src/main/scala/com/twitter/finagle/mdns/MDNS.scala">MDNS</a></p>
 </div>
 <div class="section" id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
