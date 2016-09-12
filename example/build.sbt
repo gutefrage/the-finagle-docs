@@ -17,8 +17,12 @@ libraryDependencies ++= Seq(
   "com.twitter" %% "finagle-http" % finagleVersion,
   "com.twitter" %% "finagle-thriftmux"  % finagleVersion,
   "com.twitter" %% "twitter-server"  % "1.21.0",
+  // finatra
   "com.twitter" %% "finatra-http" % finatraVersion,
   "com.twitter" %% "finatra-http" % finatraVersion % "test" classifier "tests",
+  "com.gilt" %% "handlebars-scala" % "2.1.1",
+  "com.github.jknack" % "handlebars" % "4.0.6",
+  // finch
   "com.github.finagle" %% "finch-core" % finchVersion,
   "com.github.finagle" %% "finch-circe" % finchVersion,
   // json
