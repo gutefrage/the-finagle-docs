@@ -38,10 +38,7 @@ class WeatherController extends Controller {
 
   get("/") { request: Request =>
     client.mean().map { meanTemperature =>
-      response.ok.view(
-        "dashboard.mustache",
-        DashboardData(meanTemperature, Some("Dashboard"))
-      )
+      DashboardData(meanTemperature, Some("Dashboard"))
     }
   }
 
