@@ -22,10 +22,17 @@ class WeatherController extends Controller {
   get("/") { request: Request =>
     response.ok.view(
       "dashboard.mustache",
-      DashboardData(0.0)
+      DashboardData(0.0, Some("Dashboard"))
+    )
+  }
+
+  get("/none") { request: Request =>
+    response.ok.view(
+      "dashboard.mustache",
+      DashboardData(0.0, None)
     )
   }
 }
 
 @Mustache("dashboard")
-case class DashboardData(meanTemperature: Double)
+case class DashboardData(meanTemperature: Double, name: Option[String])
