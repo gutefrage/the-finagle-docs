@@ -3,12 +3,14 @@ package net.gutefrage.basic
 import javax.inject.{Inject, Singleton}
 
 import com.google.inject.{Module, Provides}
+import com.twitter.finagle.Dtab
 import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finatra.http.{Controller, HttpServer}
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import com.twitter.finatra.response.Mustache
 import com.twitter.inject.TwitterModule
+import com.twitter.inject.annotations.Flag
 import net.gutefrage.Dtabs
 import net.gutefrage.temperature.thrift.TemperatureService
 
@@ -53,24 +55,39 @@ object TemperatureServiceModule extends TwitterModule {
   * @param temperatureService - Injected thrift client
   */
 class WeatherController @Inject()(
-  temperatureService: TemperatureService.FutureIface
+  temperatureService: TemperatureService.FutureIface,
+  @Flag("local.doc.root") localDocRoot: String,
+  @Flag("doc.root") docRoot: String
 ) extends Controller {
+
+  private val docConfig = DocConfig(localDocRoot, docRoot)
 
   get("/") { request: Request =>
     temperatureService.mean().map { meanTemperature =>
-      DashboardData(meanTemperature, Some("Dashboard"))
+      DashboardData(meanTemperature, Some("local"), docConfig)
     }
   }
 
-  get("/none") { request: Request =>
-    temperatureService.mean().map { meanTemperature =>
-      response.ok.view(
-        "dashboard.mustache",
-        DashboardData(meanTemperature, None)
-      )
+  get("/:env") { request: Request =>
+    val environment = request.params("env")
+
+    Dtab.unwind {
+      Dtab.local = Dtab.read(s"/env => /s#/${environment}")
+      temperatureService.mean().map { meanTemperature =>
+        DashboardData(meanTemperature, Some(environment), docConfig)
+      }
     }
+  }
+
+  get("/assets/:*") { request: Request =>
+    response.ok.file("/assets/" + request.params("*"))
   }
 }
 
 @Mustache("dashboard")
-case class DashboardData(meanTemperature: Double, name: Option[String])
+case class DashboardData(
+  meanTemperature: Double,
+  environment: Option[String],
+  docConfig: DocConfig
+)
+case class DocConfig(localDocRoot: String, docRoot: String)
