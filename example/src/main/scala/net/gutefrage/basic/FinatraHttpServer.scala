@@ -70,6 +70,7 @@ class WeatherController @Inject()(
     }
   }
 
+  // Change dtab according to the environment
   get("/:env") { request: Request =>
     val environment = request.params("env")
 
@@ -81,6 +82,7 @@ class WeatherController @Inject()(
     }
   }
 
+  // Asset route (for styles.css)
   get("/assets/:*") { request: Request =>
     response.ok.file("/assets/" + request.params("*"))
   }
