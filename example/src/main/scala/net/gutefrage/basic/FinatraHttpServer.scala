@@ -53,6 +53,8 @@ object TemperatureServiceModule extends TwitterModule {
   * The actual controller
   *
   * @param temperatureService - Injected thrift client
+  * @param localDocRoot - resource configuration
+  * @param docRoot - resource configuration
   */
 class WeatherController @Inject()(
   temperatureService: TemperatureService.FutureIface,
@@ -72,7 +74,7 @@ class WeatherController @Inject()(
     val environment = request.params("env")
 
     Dtab.unwind {
-      Dtab.local = Dtab.read(s"/env => /s#/${environment}")
+      Dtab.local = Dtab.read(s"/env => /s#/$environment")
       temperatureService.mean().map { meanTemperature =>
         DashboardData(meanTemperature, Some(environment), docConfig)
       }
