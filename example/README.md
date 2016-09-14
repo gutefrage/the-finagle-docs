@@ -91,6 +91,14 @@ curl --request GET \
   --header 'dtab-local: /env => /s#/prod' 
 ```
 
+There is also a simple FE available via [Finatra](https://github.com/twitter/finatra)
+
+```bash
+runMain net.gutefrage.basic.FinatraHttpServer
+```
+
+And go to [http://localhost:9000](http://localhost:9000)
+
 ### Admin UI
 
 Each service has its own admin interface. 
