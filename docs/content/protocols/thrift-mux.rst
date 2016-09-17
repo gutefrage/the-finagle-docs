@@ -127,13 +127,78 @@ files from these dependencies and process them.
     }
 
 
+Finagle Service
+---------------
+
+This section explains how to implement and start a thrift server and how to create a thrift client.
+An ``EchoService`` will be used as an example. It's defined by the following thrift definition file:
+
+.. code-block:: thrift
+
+  namespace * echo.thrift
+
+  service EchoService {
+     string echo(string msg);
+  }
+
 Server
-------
+~~~~~~
+
+Scrooge generates different service stubs we could implement. A generic ``EchoService[+MM[_]]`` trait, that lets
+the user define monadic container for the service. And a specialized variant ``EchoService.FutureIface``, which uses
+*Twitter Futures* as monadic containers. We recommend using the specialized variant as other helper classes require it.
+
+A example implementation looks like this:
+
+.. code-block:: scala
+
+  import echo.thrift._
+  import com.twitter.util.Future
+
+  val service: EchoService.FutureIface = new EchoService.FutureIface {
+     override def echo(msg: String): Future[String] = Future.value(s"Echo: $msg")
+  }
 
 
+Next we need to wrap the ``FutureIface`` implementation into a `Finagle Service`_. Scrooge generates an
+``EchoService.FinagledService`` for this reason.
+
+.. code-block:: scala
+
+  import com.twitter.finagle.Service
+  import com.twitter.finagle.thrift.Protocols
+
+  val finagledService: Service[Array[Byte], Array[Byte]] =
+      new EchoService.FinagledService(service, Protocols.binaryFactory())
+
+Now we can start a server.
+
+.. code-block:: scala
+
+  import com.twitter.finagle.{Thrift, ThriftMux}
+
+  // thrift protocol without announcing
+  val thriftServer = Thrift.server
+    .withLabel("thrift-echo-service")
+    .serve(
+      addr = ":8080",
+      service = finagledService
+    )
+
+  // ThriftMux protocol with announcing to a local zk instance
+  val thriftMuxServer = ThriftMux.server
+    .withLabel("thriftmux-echo-service")
+    .serveAndAnnounce(
+      name = "zk!127.0.0.1:2181!/service/echo!0",
+      addr = ":8081",
+      service = finagledService
+    )
+
+For more information on serving, announcing and resolving read the :ref:`service-discovery` section.
 
 Client
-------
+~~~~~~
 
 .. _Scrooge: https://scrooge
 .. _Apache Thrift: https://thrift.apache.org/
+.. _Finagle Service: https://twitter.github.io/finagle/docs/#com.twitter.finagle.Service
