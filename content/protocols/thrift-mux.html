@@ -245,11 +245,82 @@ files from these dependencies and process them.</p>
 </div>
 </div>
 </div>
+<div class="section" id="finagle-service">
+<h2>Finagle Service<a class="headerlink" href="#finagle-service" title="Permalink to this headline">¶</a></h2>
+<p>This section explains how to implement and start a thrift server and how to create a thrift client.
+An <code class="docutils literal"><span class="pre">EchoService</span></code> will be used as an example. It&#8217;s defined by the following thrift definition file:</p>
+<div class="highlight-thrift"><div class="highlight"><pre><span></span><span class="kn">namespace</span><span class="w"> </span><span class="nn">*</span><span class="w"> </span><span class="n">echo.thrift</span><span class="w"></span>
+
+<span class="kd">service</span><span class="w"> </span><span class="nc">EchoService</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="kt">string</span><span class="w"> </span><span class="nf">echo</span><span class="o">(</span><span class="kt">string</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
 <div class="section" id="server">
-<h2>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h2>
+<h3>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h3>
+<p>Scrooge generates different service stubs we could implement. A generic <code class="docutils literal"><span class="pre">EchoService[+MM[_]]</span></code> trait, that lets
+the user define monadic container for the service. And a specialized variant <code class="docutils literal"><span class="pre">EchoService.FutureIface</span></code>, which uses
+<em>Twitter Futures</em> as monadic containers. We recommend using the specialized variant as other helper classes require it.</p>
+<p>A example implementation looks like this:</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">echo.thrift._</span>
+<span class="k">import</span> <span class="nn">com.twitter.util.Future</span>
+
+<span class="k">val</span> <span class="n">service</span><span class="k">:</span> <span class="kt">EchoService.FutureIface</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EchoService</span><span class="o">.</span><span class="nc">FutureIface</span> <span class="o">{</span>
+   <span class="k">override</span> <span class="k">def</span> <span class="n">echo</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Future</span><span class="o">.</span><span class="n">value</span><span class="o">(</span><span class="s">s&quot;Echo: </span><span class="si">$msg</span><span class="s">&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Next we need to wrap the <code class="docutils literal"><span class="pre">FutureIface</span></code> implementation into a <a class="reference external" href="https://twitter.github.io/finagle/docs/#com.twitter.finagle.Service">Finagle Service</a>. Scrooge generates an
+<code class="docutils literal"><span class="pre">EchoService.FinagledService</span></code> for this purpose.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.Service</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.thrift.Protocols</span>
+
+<span class="k">val</span> <span class="n">finagledService</span><span class="k">:</span> <span class="kt">Service</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">Byte</span><span class="o">]</span>, <span class="kt">Array</span><span class="o">[</span><span class="kt">Byte</span><span class="o">]]</span> <span class="k">=</span>
+    <span class="k">new</span> <span class="nc">EchoService</span><span class="o">.</span><span class="nc">FinagledService</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="nc">Protocols</span><span class="o">.</span><span class="n">binaryFactory</span><span class="o">())</span>
+</pre></div>
+</div>
+<p>Now we can start a server.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Thrift</span><span class="o">,</span> <span class="nc">ThriftMux</span><span class="o">}</span>
+
+<span class="c1">// thrift protocol without announcing</span>
+<span class="k">val</span> <span class="n">thriftServer</span> <span class="k">=</span> <span class="nc">Thrift</span><span class="o">.</span><span class="n">server</span>
+  <span class="o">.</span><span class="n">withLabel</span><span class="o">(</span><span class="s">&quot;thrift-echo-service&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">serve</span><span class="o">(</span>
+    <span class="n">addr</span> <span class="k">=</span> <span class="s">&quot;:8080&quot;</span><span class="o">,</span>
+    <span class="n">service</span> <span class="k">=</span> <span class="n">finagledService</span>
+  <span class="o">)</span>
+
+<span class="c1">// ThriftMux protocol with announcing to a local zk instance</span>
+<span class="k">val</span> <span class="n">thriftMuxServer</span> <span class="k">=</span> <span class="nc">ThriftMux</span><span class="o">.</span><span class="n">server</span>
+  <span class="o">.</span><span class="n">withLabel</span><span class="o">(</span><span class="s">&quot;thriftmux-echo-service&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">serveAndAnnounce</span><span class="o">(</span>
+    <span class="n">name</span> <span class="k">=</span> <span class="s">&quot;zk!127.0.0.1:2181!/service/echo!0&quot;</span><span class="o">,</span>
+    <span class="n">addr</span> <span class="k">=</span> <span class="s">&quot;:8081&quot;</span><span class="o">,</span>
+    <span class="n">service</span> <span class="k">=</span> <span class="n">finagledService</span>
+  <span class="o">)</span>
+</pre></div>
+</div>
+<p>For more information on serving, announcing and resolving read the <a class="reference internal" href="../service-discovery.html#service-discovery"><span class="std std-ref">Service Discovery</span></a> section.</p>
 </div>
 <div class="section" id="client">
-<h2>Client<a class="headerlink" href="#client" title="Permalink to this headline">¶</a></h2>
+<h3>Client<a class="headerlink" href="#client" title="Permalink to this headline">¶</a></h3>
+<p>Creating a client is done with the same <code class="docutils literal"><span class="pre">EchoService.FutureIface</span></code> trait.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">echo.thrift._</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Thrift</span><span class="o">,</span> <span class="nc">ThriftMux</span><span class="o">}</span>
+
+<span class="c1">// Thrift client with dtab resolving</span>
+<span class="k">val</span> <span class="n">thriftClient</span> <span class="k">=</span> <span class="nc">Thrift</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">newIface</span><span class="o">[</span><span class="kt">EchoService.FutureIFace</span><span class="o">](</span>
+  <span class="n">dest</span> <span class="k">=</span> <span class="s">&quot;/s/echo&quot;</span><span class="o">,</span> <span class="n">label</span> <span class="k">=</span> <span class="s">&quot;echo-service-client&quot;</span>
+<span class="o">)</span>
+
+<span class="c1">// ThriftMux client with static inet resolving</span>
+<span class="k">val</span> <span class="n">thriftMuxClient</span> <span class="k">=</span> <span class="nc">ThriftMux</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">newIface</span><span class="o">[</span><span class="kt">EchoService.FutureIface</span><span class="o">](</span>
+  <span class="n">dest</span> <span class="k">=</span> <span class="s">&quot;echo.services.local:8080&quot;</span><span class="o">,</span> <span class="n">label</span> <span class="k">=</span> <span class="s">&quot;echo-service-mux-client&quot;</span>
+<span class="o">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">dest</span></code> parameter value depends on the type of <a class="reference internal" href="../service-discovery.html#service-discovery"><span class="std std-ref">Service Discovery</span></a> in use.</p>
+</div>
 </div>
 </div>
 
