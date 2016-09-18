@@ -161,7 +161,7 @@ A example implementation looks like this:
 
 
 Next we need to wrap the ``FutureIface`` implementation into a `Finagle Service`_. Scrooge generates an
-``EchoService.FinagledService`` for this reason.
+``EchoService.FinagledService`` for this purpose.
 
 .. code-block:: scala
 
@@ -198,6 +198,26 @@ For more information on serving, announcing and resolving read the :ref:`service
 
 Client
 ~~~~~~
+
+Creating a client is done with the same ``EchoService.FutureIface`` trait.
+
+
+.. code-block:: scala
+
+    import echo.thrift._
+    import com.twitter.finagle.{Thrift, ThriftMux}
+
+    // Thrift client with dtab resolving
+    val thriftClient = Thrift.client.newIface[EchoService.FutureIFace](
+      dest = "/s/echo", label = "echo-service-client"
+    )
+
+    // ThriftMux client with static inet resolving
+    val thriftMuxClient = ThriftMux.client.newIface[EchoService.FutureIface](
+      dest = "echo.services.local:8080", label = "echo-service-mux-client"
+    )
+
+The ``dest`` parameter value depends on the type of :ref:`service-discovery` in use.
 
 .. _Scrooge: https://scrooge
 .. _Apache Thrift: https://thrift.apache.org/
