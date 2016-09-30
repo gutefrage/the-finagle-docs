@@ -120,7 +120,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#jmdns-jmdns">JmDNS (jmdns)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#dtabs-dynamic-request-routing">Dtabs - Dynamic Request Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-resolving">Dynamic Resolving</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dtabs-in-a-nutshell">Dtabs in a nutshell</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#applications-refer-to-logical-names">Applications refer to logical names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#requests-are-bound-to-concrete-names">Requests are bound to concrete names</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delegations-express-routing">Delegations express routing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contexts.html">Contexts</a></li>
@@ -332,9 +341,131 @@ Clients should only use this in scenarios where host -&gt; IP map changes do not
 <p>The implementation can be found here: <a class="reference external" href="https://github.com/twitter/finagle/blob/develop/finagle-mdns/src/main/scala/com/twitter/finagle/mdns/JmDNS.scala">JmDNS</a>.</p>
 </div>
 </div>
-<div class="section" id="dtabs-dynamic-request-routing">
-<h2>Dtabs - Dynamic Request Routing<a class="headerlink" href="#dtabs-dynamic-request-routing" title="Permalink to this headline">¶</a></h2>
-<p>TODO</p>
+<div class="section" id="dynamic-resolving">
+<h2>Dynamic Resolving<a class="headerlink" href="#dynamic-resolving" title="Permalink to this headline">¶</a></h2>
+<p>Finagle provides a way to resolve services per request. The main concept are so called  <strong>Dtabs</strong> short for
+<strong>Delegation tables</strong>. They provide a way to resolve a hierarchical path into a physical network address. The
+Finagle documentation provides a detailed explanation on how <a class="reference external" href="http://twitter.github.io/finagle/guide/Names.html#paths">Paths</a> are evaluated and how dtabs are structured.</p>
+<p>This section gives some examples on how to create, use and override dtabs.</p>
+<div class="section" id="dtabs-in-a-nutshell">
+<h3>Dtabs in a nutshell<a class="headerlink" href="#dtabs-in-a-nutshell" title="Permalink to this headline">¶</a></h3>
+<p>Oliver Gould sums it up in his talk <a class="reference external" href="https://speakerdeck.com/olix0r/the-once-and-future-layer-5-twitter-style-microservices-at-scale-with-finagle-and-linkerd-number?slide=31">The Once and Future Layer 5</a> like this.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><dl class="first docutils">
+<dt>Applications refer to <em>logical names</em></dt>
+<dd><p class="first last">Example: <code class="docutils literal"><span class="pre">/s/users</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Requests are bound to <em>concrete names</em></dt>
+<dd><p class="first last">Example: <code class="docutils literal"><span class="pre">/#/zookeeper.example.local/prod/users</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Delegations</em> express routing</dt>
+<dd><p class="first last">Example: <code class="docutils literal"><span class="pre">/s</span> <span class="pre">=&gt;</span> <span class="pre">/#/zookeeper.example.local/prod</span></code></p>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<div class="section" id="applications-refer-to-logical-names">
+<h4>Applications refer to logical names<a class="headerlink" href="#applications-refer-to-logical-names" title="Permalink to this headline">¶</a></h4>
+<p>In contrast to static resolving this means a <em>destination</em> is describe as unix-like, hierarchical path without any
+information about schema, hosts or ports.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="69%" />
+<col width="31%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Static Name.Bound</th>
+<th class="head">Logical Name.Path</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>zk!zookeeper.example.local/prod/users</td>
+<td>/s/users</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="requests-are-bound-to-concrete-names">
+<h4>Requests are bound to concrete names<a class="headerlink" href="#requests-are-bound-to-concrete-names" title="Permalink to this headline">¶</a></h4>
+<p>A <code class="docutils literal"><span class="pre">Name.Path</span></code> is turned into a concrete <code class="docutils literal"><span class="pre">Path.Bound</span></code> via a delegation table. If the <code class="docutils literal"><span class="pre">Name.Path</span></code> cannot be
+resolved the request can&#8217;t be performed.</p>
+<p>The Resolver can turn a <code class="docutils literal"><span class="pre">Name.Path</span></code> only into a <code class="docutils literal"><span class="pre">Path.Bound</span></code> if the resolving terminates with a <a class="reference external" href="http://twitter.github.io/finagle/docs/#com.twitter.finagle.Namer">Namer</a>
+implementation. A path starting with <code class="docutils literal"><span class="pre">$</span></code> are called &#8220;system paths&#8221; and are treated specially by Finagle.
+This is used to specify a concrete <a class="reference external" href="http://twitter.github.io/finagle/docs/#com.twitter.finagle.Namer">Namer</a>, e.g.</p>
+<ul class="simple">
+<li>resolving inet addresses <code class="docutils literal"><span class="pre">/$/inet/localhost/8080/api/users</span></code></li>
+<li>resolving serversets in zookeeper <code class="docutils literal"><span class="pre">/$/com.twitter.serverset/127.0.0.1:2181/prod/users</span></code></li>
+</ul>
+</div>
+<div class="section" id="delegations-express-routing">
+<h4>Delegations express routing<a class="headerlink" href="#delegations-express-routing" title="Permalink to this headline">¶</a></h4>
+<p>Delegation tables are responsible for the dynamic part. They express the routing for a request by defining the path
+rewrite rules. Dtabs rewrite a given path by a simple prefix substitution.</p>
+<p>Given a path <code class="docutils literal"><span class="pre">/s/users</span></code> and  a delegation table with a single entry: <code class="docutils literal"><span class="pre">/s</span> <span class="pre">=&gt;</span> <span class="pre">/s#/env</span></code> resolving will generate
+<code class="docutils literal"><span class="pre">/s#/env/users</span></code>.</p>
+<p>Resolving as three important properties.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><dl class="first docutils">
+<dt>Dtab resolving must always terminate</dt>
+<dd><p class="first last">This means your delegation table must <strong>not</strong> have any <strong>recursive</strong> rules</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Dtabs are applied from bottom to top</dt>
+<dd><p class="first last">This means you override previous rules by appending to an existing dtab</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Dtabs are applied per request</dt>
+<dd><p class="first last">This means if you override an entry it will be used for the residual request tree</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>First, you need to create an actual Dtab. Finagle provides various ways to instantiate a Dtab. The simplest variant
+is to parse a string that has the correct format.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.Dtab</span>
+
+<span class="k">val</span> <span class="n">delegationTable</span> <span class="k">=</span> <span class="nc">Dtab</span><span class="o">.</span><span class="n">read</span><span class="o">(</span>
+    <span class="s">&quot;&quot;&quot;|/zk##    =&gt; /$/com.twitter.serverset;</span>
+<span class="s">       |/zk#     =&gt; /zk##/127.0.0.1:2181;</span>
+<span class="s">       |/s#      =&gt; /zk#/service;</span>
+<span class="s">       |/env     =&gt; /s#/local;</span>
+<span class="s">       |/s       =&gt; /env;&quot;&quot;&quot;</span><span class="o">.</span><span class="n">stripMargin</span>
+</pre></div>
+</div>
+<p>Finagle has two places to store Dtabs, <code class="docutils literal"><span class="pre">base</span></code> and <code class="docutils literal"><span class="pre">local</span></code>. <code class="docutils literal"><span class="pre">base</span></code> should be set once during startup and not
+change afterwards. <code class="docutils literal"><span class="pre">local</span></code> is for one-time, local routing. Both places are accessed via the <code class="docutils literal"><span class="pre">Dtab</span></code> instance.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="c1">// set the base Dtab</span>
+<span class="nc">Dtab</span><span class="o">.</span><span class="n">base</span> <span class="k">=</span> <span class="n">delegationTable</span>
+
+<span class="c1">// set a local Dtab permanently</span>
+<span class="nc">Dtab</span><span class="o">.</span><span class="n">local</span> <span class="k">=</span> <span class="n">delegationTable</span>
+
+<span class="c1">// set a scoped, local Dtab and restore old Dtab afterwards</span>
+<span class="nc">Dtab</span><span class="o">.</span><span class="n">unwind</span> <span class="o">{</span>
+   <span class="nc">Dtab</span><span class="o">.</span><span class="n">local</span> <span class="k">=</span> <span class="n">delegationTable</span>
+   <span class="c1">// requests in this scope use the local Dtab</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
