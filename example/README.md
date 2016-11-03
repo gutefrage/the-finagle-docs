@@ -1,7 +1,7 @@
 # Example Finagle Applications
 
 This example project contains various implementations of the same services.
-Each example demonstrates a different finagle feature. 
+Each example demonstrates a different finagle feature.
 
 The services are in different packages. Some basic utilities are
 in the top-level package `net.gutefrage`.
@@ -38,7 +38,7 @@ sbt "runMain net.gutefrage.basic.TemperatureServer -port 8081 -env local -admin.
 ```
 
 **basic** is the feature package. You can use sbts auto-completion feature to discover available
-main classes 
+main classes
 
 ```
 sbt
@@ -46,7 +46,7 @@ sbt
 (press tab-tab)
 > runMain net.gutefrage.
   net.gutefrage.basic.TemperatureSensorDtabs    net.gutefrage.basic.TemperatureSensorStatic   net.gutefrage.basic.TemperatureServer
-  net.gutefrage.basic.WeatherApi                net.gutefrage.context.TemperatureServer       net.gutefrage.context.WeatherApi 
+  net.gutefrage.basic.WeatherApi                net.gutefrage.context.TemperatureServer       net.gutefrage.context.WeatherApi
 ```
 
 # Example Services
@@ -57,7 +57,7 @@ This packages contains a complete system implemented in a very simplistic way. T
 and `WeatherApi` come in a single version. The _sensor_ is implemented with two different client
 resolving techniques
 
-- Static resolving 
+- Static resolving
 - Dynamic resolving per request with Dtabs
 
 To start the complete system
@@ -88,20 +88,20 @@ Route your requests to another environment
 ```bash
 curl --request GET \
   --url http://localhost:8000/weather/mean \
-  --header 'dtab-local: /env => /s#/prod' 
+  --header 'dtab-local: /env => /s#/prod'
 ```
 
 There is also a simple FE available via [Finatra](https://github.com/twitter/finatra)
 
 ```bash
-runMain net.gutefrage.basic.FinatraHttpServer
+sbt "runMain net.gutefrage.basic.FinatraHttpServer"
 ```
 
 And go to [http://localhost:9000](http://localhost:9000)
 
 ### Admin UI
 
-Each service has its own admin interface. 
+Each service has its own admin interface.
 
 | Service | URL                  |
 | ------- | -------------------- |

@@ -2,22 +2,24 @@ name := "finagle-weather"
 version := "1.0"
 organization := "net.gutefrage"
 
-scalaVersion  := "2.11.7"
+scalaVersion  := "2.11.8"
+ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
-val finagleVersion = "6.38.0"
+val finagleVersion = "6.39.0"
+val finagleTwitterServer = "1.24.0"
 val finchVersion = "0.10.0"
-val finatraVersion = "2.4.0"
+val finatraVersion = "2.5.0"
 
 libraryDependencies ++= Seq(
-  "com.twitter" %% "scrooge-core" % "4.7.0",
+  "com.twitter" %% "scrooge-core" % "4.11.0",
   "com.twitter" %% "finagle-serversets" % finagleVersion,
   "com.twitter" %% "finagle-redis" % finagleVersion,
   "com.twitter" %% "finagle-mysql" % finagleVersion,
   "com.twitter" %% "finagle-thrift"  % finagleVersion,
   "com.twitter" %% "finagle-http" % finagleVersion,
   "com.twitter" %% "finagle-thriftmux"  % finagleVersion,
-  "com.twitter" %% "finagle-stats"  % finagleVersion,
-  "com.twitter" %% "twitter-server"  % "1.23.0",
+  "com.twitter" %% "finagle-stats" % finagleVersion,
+  "com.twitter" %% "twitter-server" % finagleTwitterServer,
   "com.twitter" %% "finatra-http" % finatraVersion,
   "com.twitter" %% "finatra-http" % finatraVersion % "test" classifier "tests",
   "com.github.finagle" %% "finch-core" % finchVersion,
