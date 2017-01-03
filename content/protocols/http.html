@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Http &mdash; The Finagle Docs 0.1-SNAPSHOT documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/css/theme_overrides.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="The Finagle Docs 0.1-SNAPSHOT documentation" href="../../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> The Finagle Docs
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1-SNAPSHOT
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../finagle-util.html">Finagle Util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../service-discovery.html">Service Discovery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contexts.html">Contexts</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">The Finagle Docs</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+    <li>Http</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/content/protocols/http.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="http">
+<h1>Http<a class="headerlink" href="#http" title="Permalink to this headline">¶</a></h1>
+<p>Finagle provides APIs for writing http services and clients.</p>
+<div class="section" id="server">
+<h2>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h2>
+<p>A <a class="reference external" href="https://twitter.github.io/finagle/guide/Quickstart.html#a-minimal-http-server">minimal HTTP server</a> example is available in the Finagle docs. Essentially it&#8217;s a <a class="reference external" href="https://twitter.github.io/finagle/docs/#com.twitter.finagle.Service">Finagle Service</a> that handles
+<a href="#id1"><span class="problematic" id="id2">``</span></a>http.Request``s and returns <a href="#id3"><span class="problematic" id="id4">``</span></a>http.Response``s.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Http</span><span class="o">,</span> <span class="nc">Service</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.http</span>
+<span class="k">import</span> <span class="nn">com.twitter.util.</span><span class="o">{</span><span class="nc">Await</span><span class="o">,</span> <span class="nc">Future</span><span class="o">}</span>
+
+<span class="c1">// the http service</span>
+<span class="k">val</span> <span class="n">service</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Service</span><span class="o">[</span><span class="kt">http.Request</span>, <span class="kt">http.Response</span><span class="o">]</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">apply</span><span class="o">(</span><span class="n">req</span><span class="k">:</span> <span class="kt">http.Request</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">http.Response</span><span class="o">]</span> <span class="k">=</span>
+    <span class="nc">Future</span><span class="o">.</span><span class="n">value</span><span class="o">(</span>
+      <span class="n">http</span><span class="o">.</span><span class="nc">Response</span><span class="o">(</span><span class="n">req</span><span class="o">.</span><span class="n">version</span><span class="o">,</span> <span class="n">http</span><span class="o">.</span><span class="nc">Status</span><span class="o">.</span><span class="nc">Ok</span><span class="o">)</span>
+    <span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Starting the http server with a default configuration.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">val</span> <span class="n">server</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">.</span><span class="n">serve</span><span class="o">(</span><span class="s">&quot;:8080&quot;</span><span class="o">,</span> <span class="n">service</span><span class="o">)</span>
+<span class="nc">Await</span><span class="o">.</span><span class="n">ready</span><span class="o">(</span><span class="n">server</span><span class="o">)</span>
+</pre></div>
+</div>
+<div class="section" id="xx-responses-as-failures">
+<h3>5xx responses as failures<a class="headerlink" href="#xx-responses-as-failures" title="Permalink to this headline">¶</a></h3>
+<p>Finagle is protocol agnostic so it treats a http <code class="docutils literal"><span class="pre">5xx</span></code> as a valid response. The behaviour can be configured with
+a <code class="docutils literal"><span class="pre">ResponseClassifier</span></code>.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.http.service.HttpResponseClassifier</span>
+
+<span class="k">val</span> <span class="n">server</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">.</span><span class="n">server</span>
+  <span class="o">.</span><span class="n">withResponseClassifier</span><span class="o">(</span><span class="nc">HttpResponseClassifier</span><span class="o">.</span><span class="nc">ServerErrorsAsFailures</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">serve</span><span class="o">(</span><span class="s">&quot;:8080&quot;</span><span class="o">,</span> <span class="n">service</span><span class="o">)</span>
+<span class="nc">Await</span><span class="o">.</span><span class="n">ready</span><span class="o">(</span><span class="n">server</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="client">
+<h2>Client<a class="headerlink" href="#client" title="Permalink to this headline">¶</a></h2>
+<p>Creating a http client is done via <code class="docutils literal"><span class="pre">Http.client</span></code>.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Http</span><span class="o">,</span> <span class="nc">Service</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.http</span>
+
+<span class="k">val</span> <span class="n">hostname</span> <span class="k">=</span> <span class="s">&quot;gutefrage.net&quot;</span>
+<span class="k">val</span> <span class="n">client</span><span class="k">:</span> <span class="kt">Service</span><span class="o">[</span><span class="kt">http.Request</span>, <span class="kt">http.Response</span><span class="o">]</span> <span class="k">=</span>
+  <span class="nc">Http</span><span class="o">.</span><span class="n">client</span>
+      <span class="o">.</span><span class="n">newService</span><span class="o">(</span><span class="s">s&quot;</span><span class="si">$hostname</span><span class="s">:80&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+<div class="section" id="https">
+<h3>HTTPS<a class="headerlink" href="#https" title="Permalink to this headline">¶</a></h3>
+<p>For a https connection change the port and add a TLS hostname.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Http</span><span class="o">,</span> <span class="nc">Service</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.http</span>
+
+<span class="k">val</span> <span class="n">hostname</span> <span class="k">=</span> <span class="s">&quot;gutefrage.net&quot;</span>
+<span class="k">val</span> <span class="n">client</span><span class="k">:</span> <span class="kt">Service</span><span class="o">[</span><span class="kt">Request</span>, <span class="kt">Response</span><span class="o">]</span> <span class="k">=</span>
+  <span class="nc">Http</span><span class="o">.</span><span class="n">client</span>
+      <span class="o">.</span><span class="n">withTls</span><span class="o">(</span><span class="n">hostname</span><span class="o">)</span>
+      <span class="o">.</span><span class="n">newService</span><span class="o">(</span><span class="s">s&quot;</span><span class="si">$hostname</span><span class="s">:443&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="web-proxy">
+<h3>Web Proxy<a class="headerlink" href="#web-proxy" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>There is built-in support for tunneling TCP-based protocols through web proxy servers in a default Finagle client
+that might be used with any TCP traffic, not only HTTP(S). See Squid documentation on this feature.</p>
+<p>The following example enables tunneling HTTP traffic through a web proxy server my-proxy-server.com
+to twitter.com.</p>
+<p class="attribution">&mdash;<a class="reference external" href="https://twitter.github.io/finagle/guide/Clients.html#http-proxy">HTTP Proxy documentation example</a></p>
+</div></blockquote>
+<div class="highlight-scala"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Service</span><span class="o">,</span> <span class="nc">Http</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.http.</span><span class="o">{</span><span class="nc">Request</span><span class="o">,</span> <span class="nc">Response</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.client.Transporter</span>
+<span class="k">import</span> <span class="nn">java.net.SocketAddress</span>
+
+<span class="k">val</span> <span class="n">twitter</span><span class="k">:</span> <span class="kt">Service</span><span class="o">[</span><span class="kt">Request</span>, <span class="kt">Response</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">.</span><span class="n">client</span>
+  <span class="o">.</span><span class="n">configured</span><span class="o">(</span><span class="nc">Transporter</span><span class="o">.</span><span class="nc">HttpProxy</span><span class="o">(</span><span class="nc">Some</span><span class="o">(</span>
+     <span class="k">new</span> <span class="nc">InetSocketAddress</span><span class="o">(</span><span class="s">&quot;my-proxy-server.com&quot;</span><span class="o">,</span> <span class="mi">3128</span><span class="o">)</span>
+  <span class="o">)))</span>
+  <span class="o">.</span><span class="n">withSessionQualifier</span><span class="o">.</span><span class="n">noFailFast</span>
+  <span class="o">.</span><span class="n">newService</span><span class="o">(</span><span class="s">&quot;gutefrage.net&quot;</span><span class="o">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="service-discovery">
+<h2>Service discovery<a class="headerlink" href="#service-discovery" title="Permalink to this headline">¶</a></h2>
+<p>In general DNS is used for service discovery when using http. However you can also use the zookeeper or other
+<a class="reference internal" href="../service-discovery.html#service-discovery"><span class="std std-ref">Service Discovery</span></a> methods for http services.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Gutefrage.net.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.1-SNAPSHOT',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

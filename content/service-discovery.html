@@ -32,6 +32,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="The Finagle Docs 0.1-SNAPSHOT documentation" href="../index.html"/>
         <link rel="next" title="Contexts" href="contexts.html"/>
         <link rel="prev" title="Protocols" href="protocols/index.html"/> 
@@ -167,7 +170,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/content/service-discovery.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/content/service-discovery.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -351,23 +354,20 @@ Finagle documentation provides a detailed explanation on how <a class="reference
 <h3>Dtabs in a nutshell<a class="headerlink" href="#dtabs-in-a-nutshell" title="Permalink to this headline">¶</a></h3>
 <p>Oliver Gould sums it up in his talk <a class="reference external" href="https://speakerdeck.com/olix0r/the-once-and-future-layer-5-twitter-style-microservices-at-scale-with-finagle-and-linkerd-number?slide=31">The Once and Future Layer 5</a> like this.</p>
 <blockquote>
-<div><ol class="arabic">
+<div><ol class="arabic simple">
 <li><dl class="first docutils">
 <dt>Applications refer to <em>logical names</em></dt>
-<dd><p class="first last">Example: <code class="docutils literal"><span class="pre">/s/users</span></code></p>
-</dd>
+<dd>Example: <code class="docutils literal"><span class="pre">/s/users</span></code></dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>Requests are bound to <em>concrete names</em></dt>
-<dd><p class="first last">Example: <code class="docutils literal"><span class="pre">/#/zookeeper.example.local/prod/users</span></code></p>
-</dd>
+<dd>Example: <code class="docutils literal"><span class="pre">/#/zookeeper.example.local/prod/users</span></code></dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt><em>Delegations</em> express routing</dt>
-<dd><p class="first last">Example: <code class="docutils literal"><span class="pre">/s</span> <span class="pre">=&gt;</span> <span class="pre">/#/zookeeper.example.local/prod</span></code></p>
-</dd>
+<dd>Example: <code class="docutils literal"><span class="pre">/s</span> <span class="pre">=&gt;</span> <span class="pre">/#/zookeeper.example.local/prod</span></code></dd>
 </dl>
 </li>
 </ol>
@@ -413,23 +413,20 @@ rewrite rules. Dtabs rewrite a given path by a simple prefix substitution.</p>
 <code class="docutils literal"><span class="pre">/s#/env/users</span></code>.</p>
 <p>Resolving as three important properties.</p>
 <blockquote>
-<div><ol class="arabic">
+<div><ol class="arabic simple">
 <li><dl class="first docutils">
 <dt>Dtab resolving must always terminate</dt>
-<dd><p class="first last">This means your delegation table must <strong>not</strong> have any <strong>recursive</strong> rules</p>
-</dd>
+<dd>This means your delegation table must <strong>not</strong> have any <strong>recursive</strong> rules</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>Dtabs are applied from bottom to top</dt>
-<dd><p class="first last">This means you override previous rules by appending to an existing dtab</p>
-</dd>
+<dd>This means you override previous rules by appending to an existing dtab</dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt>Dtabs are applied per request</dt>
-<dd><p class="first last">This means if you override an entry it will be used for the residual request tree</p>
-</dd>
+<dd>This means if you override an entry it will be used for the residual request tree</dd>
 </dl>
 </li>
 </ol>
