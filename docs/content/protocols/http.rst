@@ -85,6 +85,33 @@ For a https connection change the port and add a TLS hostname.
         .withTls(hostname)
         .newService(s"$hostname:443")
 
+Web Proxy
+~~~~~~~~~
+
+..
+
+    There is built-in support for tunneling TCP-based protocols through web proxy servers in a default Finagle client
+    that might be used with any TCP traffic, not only HTTP(S). See Squid documentation on this feature.
+
+    The following example enables tunneling HTTP traffic through a web proxy server my-proxy-server.com
+    to twitter.com.
+
+    -- `HTTP Proxy documentation example`_
+
+
+.. code-block:: scala
+
+    import com.twitter.finagle.{Service, Http}
+    import com.twitter.finagle.http.{Request, Response}
+    import com.twitter.finagle.client.Transporter
+    import java.net.SocketAddress
+
+    val twitter: Service[Request, Response] = Http.client
+      .configured(Transporter.HttpProxy(Some(
+         new InetSocketAddress("my-proxy-server.com", 3128)
+      )))
+      .withSessionQualifier.noFailFast
+      .newService("gutefrage.net")
 
 Service discovery
 -----------------
@@ -95,3 +122,4 @@ In general DNS is used for service discovery when using http. However you can al
 .. _minimal HTTP server: https://twitter.github.io/finagle/guide/Quickstart.html#a-minimal-http-server
 .. _Finch: https://github.com/finagle/finch
 .. _Finagle Service: https://twitter.github.io/finagle/docs/#com.twitter.finagle.Service
+.. _HTTP Proxy documentation example: https://twitter.github.io/finagle/guide/Clients.html#http-proxy
