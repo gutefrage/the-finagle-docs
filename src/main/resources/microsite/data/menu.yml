@@ -1,0 +1,88 @@
+options:
+  - title: Introduction
+    url: index.html
+    menu_type: docs
+    menu_section: docs
+
+    #############################
+    # Finagle Util Section      #
+    #############################
+
+  - title: Finagle Util
+    url: util.html
+    menu_type: util
+    menu_section: util
+
+  - title: App
+    url: util/app.html
+    menu_type: util
+    menu_section: app
+
+  - title: Flags
+    url: util/flags.html
+    menu_type: util
+    menu_section: flags
+
+  - title: Twitter Server
+    url: util/twitter-server.html
+    menu_type: util
+    menu_section: twitter-server
+
+  - title: Stats
+    url: util/stats.html
+    menu_type: util
+    menu_section: stats
+
+    #############################
+    # Finagle Protocols Section #
+    #############################
+
+  - title: Protocols
+    url: protocols.html
+    menu_type: protocols
+    menu_section: protocols
+
+    nested_options:
+       - title: Thrift
+         url: protocols/thrift.html
+         menu_section: thrift
+       - title: Http
+         url: protocols/http.html
+         menu_section: http
+
+    #############################
+    # Finagle Service Discovery #
+    #############################
+
+  - title: Service Discovery
+    url: service-discovery.html
+    menu_type: servicediscovery
+    menu_section: servicediscovery
+
+  - title: Announcing
+    url: discovery/announcing.html
+    menu_type: servicediscovery
+    menu_section: announcing
+
+    nested_options:
+       - title: Zookeeper
+         url: discovery/announcing-zookeeper.html
+         menu_section: zookeeper
+
+  - title: Resolving
+    url: discovery/resolving.html
+    menu_type: servicediscovery
+    menu_section: resolving
+
+    nested_options:
+       - title: Static
+         url: discovery/resolving-static.html
+         menu_section: static
+       - title: DTabs
+         url: discovery/resolving-dtabs.html
+         menu_section: dtabs
+
+  - title: Contexts
+    url: docs/contexts.html
+    menu_type: docs
+    menu_section: docs
