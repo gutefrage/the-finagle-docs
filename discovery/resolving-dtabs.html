@@ -1,0 +1,116 @@
+<html><head><title>The Finagle Docs</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gutefrage.net GmbH" /><meta name="description" content="A practical guide for Finagle" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="The Finagle Docs" /><meta name="og:site_name" content="The Finagle Docs" /><meta name="og:url" content="https://gutefrage.github.io/the-finagle-docs" /><meta name="og:type" content="website" /><meta name="og:description" content="A practical guide for Finagle" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="The Finagle Docs" /><meta name="twitter:image" content="https://gutefrage.github.io/the-finagle-docsimg/poster.png" /><meta name="twitter:description" content="A practical guide for Finagle" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="@gutefrageIT" /><meta name="twitter:creator" content="@gutefrageIT" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/kazari-style.css" /><link rel="stylesheet" href="/css/monokai.css" /><link rel="stylesheet" href="/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>The Finagle Docs</span></div></a></li>        <li><a href="/service-discovery.html" class="">Service Discovery</a></li> <li><a href="/discovery/announcing.html" class="">Announcing</a> <ul class="sub_section"> <li><a href="/discovery/announcing-zookeeper.html" class="">Zookeeper</a></li></ul></li> <li><a href="/discovery/resolving.html" class="">Resolving</a> <ul class="sub_section"> <li><a href="/discovery/resolving-static.html" class="">Static</a></li> <li><a href="/discovery/resolving-dtabs.html" class=" active ">DTabs</a></li></ul></li> </ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/gutefrage/the-finagle-docs"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/gutefrage/the-finagle-docs"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('The Finagle Docs A practical guide for Finagle');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('The Finagle Docs A practical guide for Finagle');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="gutefrage" data-github-repo="the-finagle-docs"><div class="content-wrapper"><section><h2 id="delegation-tables-dtabs">Delegation Tables (DTabs)</h2>
+
+<p>Finagle provides a way to resolve services per request. The main concept are so called  <strong>Dtabs</strong> short for
+<strong>Delegation tables</strong>. They provide a way to resolve a hierarchical path into a physical network address. The
+Finagle documentation provides a detailed explanation on how <a href="http://twitter.github.io/finagle/guide/Names.html#paths">Paths</a> are evaluated and how dtabs are structured.</p>
+
+<p>This section gives some examples on how to create, use and override dtabs.</p>
+
+<h2 id="dtabs-in-a-nutshell">Dtabs in a nutshell</h2>
+
+<p>Oliver Gould sums it up in his talk <a href="https://speakerdeck.com/olix0r/the-once-and-future-layer-5-twitter-style-microservices-at-scale-with-finagle-and-linkerd-number?slide=31">The Once and Future Layer 5</a> like this.</p>
+
+<ol>
+  <li>Applications refer to <em>logical names</em>
+Example: <code class="highlighter-rouge">/s/users</code></li>
+  <li>Requests are bound to <em>concrete names</em>
+Example: <code class="highlighter-rouge">/#/zookeeper.example.local/prod/users</code></li>
+  <li><em>Delegations</em> express routing
+Example: <code class="highlighter-rouge">/s =&gt; /#/zookeeper.example.local/prod</code></li>
+</ol>
+
+<h3 id="applications-refer-to-logical-names">Applications refer to logical names</h3>
+
+<p>In contrast to static resolving this means a <em>destination</em> is describe as unix-like, hierarchical path without any
+information about schema, hosts or ports.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Static Name.Bound</th>
+      <th>Logical Name.Path</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>zk!zookeeper.example.local/prod/users</td>
+      <td>/s/users</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="requests-are-bound-to-concrete-names">Requests are bound to concrete names</h3>
+
+<p>A <code class="highlighter-rouge">Name.Path</code> is turned into a concrete <code class="highlighter-rouge">Path.Bound</code> via a delegation table. If the <code class="highlighter-rouge">Name.Path</code> cannot be
+resolved the request can’t be performed.</p>
+
+<p>The Resolver can turn a <code class="highlighter-rouge">Name.Path</code> only into a <code class="highlighter-rouge">Path.Bound</code> if the resolving terminates with a <a href="http://twitter.github.io/finagle/docs/#com.twitter.finagle.Namer">Namer</a>
+implementation. A path starting with <code class="highlighter-rouge">$</code> are called “system paths” and are treated specially by Finagle.
+This is used to specify a concrete <a href="http://twitter.github.io/finagle/docs/#com.twitter.finagle.Namer">Namer</a>, e.g.</p>
+
+<ul>
+  <li>resolving inet addresses <code class="highlighter-rouge">/$/inet/localhost/8080/api/users</code></li>
+  <li>resolving <a href="http://twitter.github.io/commons/apidocs/com/twitter/common/zookeeper/ServerSet.html">serversets</a> in zookeeper <code class="highlighter-rouge">/$/com.twitter.serverset/127.0.0.1:2181/prod/users</code></li>
+</ul>
+
+<h3 id="delegations-express-routing">Delegations express routing</h3>
+
+<p>Delegation tables are responsible for the dynamic part. They express the routing for a request by defining the path
+rewrite rules. Dtabs rewrite a given path by a simple prefix substitution.</p>
+
+<p>Given a path <code class="highlighter-rouge">/s/users</code> and  a delegation table with a single entry: <code class="highlighter-rouge">/s =&gt; /s#/env</code> resolving will generate
+<code class="highlighter-rouge">/s#/env/users</code>.</p>
+
+<p>Resolving as three important properties.</p>
+
+<ol>
+  <li>Dtab resolving must always terminate
+ This means your delegation table must <strong>not</strong> have any <strong>recursive</strong> rules</li>
+  <li>Dtabs are applied from bottom to top
+ This means you override previous rules by appending to an existing dtab</li>
+  <li>Dtabs are applied per request
+ This means if you override an entry it will be used for the residual request tree</li>
+</ol>
+
+<h2 id="usage">Usage</h2>
+
+<p>First, you need to create an actual Dtab. Finagle provides various ways to instantiate a Dtab. The simplest variant
+is to parse a string that has the correct format.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.twitter.finagle.Dtab</span>
+
+<span class="k">val</span> <span class="n">delegationTable</span> <span class="k">=</span> <span class="nc">Dtab</span><span class="o">.</span><span class="n">read</span><span class="o">(</span>
+    <span class="s">"""|/zk##    =&gt; /$/com.twitter.serverset;
+       |/zk#     =&gt; /zk##/127.0.0.1:2181;
+       |/s#      =&gt; /zk#/service;
+       |/env     =&gt; /s#/local;
+       |/s       =&gt; /env;"""</span><span class="o">.</span><span class="n">stripMargin</span>
+</code></pre>
+</div>
+
+<p>Finagle has two places to store Dtabs, <code class="highlighter-rouge">base</code> and <code class="highlighter-rouge">local</code>. <code class="highlighter-rouge">base</code> should be set once during startup and not
+change afterwards. <code class="highlighter-rouge">local</code> is for one-time, local routing. Both places are accessed via the <code class="highlighter-rouge">Dtab</code> instance.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// set the base Dtab
+</span><span class="nc">Dtab</span><span class="o">.</span><span class="n">base</span> <span class="k">=</span> <span class="n">delegationTable</span>
+
+<span class="c1">// set a local Dtab permanently
+</span><span class="nc">Dtab</span><span class="o">.</span><span class="n">local</span> <span class="k">=</span> <span class="n">delegationTable</span>
+
+<span class="c1">// set a scoped, local Dtab and restore old Dtab afterwards
+</span><span class="nc">Dtab</span><span class="o">.</span><span class="n">unwind</span> <span class="o">{</span>
+   <span class="nc">Dtab</span><span class="o">.</span><span class="n">local</span> <span class="k">=</span> <span class="n">delegationTable</span>
+   <span class="c1">// requests in this scope use the local Dtab
+</span><span class="o">}</span>
+</code></pre>
+</div>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/js/main.js"></script><script src="/js/main.js"></script><script src="/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'monokai')
+})
+    </script></body></html>

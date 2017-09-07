@@ -1,0 +1,215 @@
+<html><head><title>The Finagle Docs</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gutefrage.net GmbH" /><meta name="description" content="A practical guide for Finagle" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="The Finagle Docs" /><meta name="og:site_name" content="The Finagle Docs" /><meta name="og:url" content="https://gutefrage.github.io/the-finagle-docs" /><meta name="og:type" content="website" /><meta name="og:description" content="A practical guide for Finagle" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="The Finagle Docs" /><meta name="twitter:image" content="https://gutefrage.github.io/the-finagle-docsimg/poster.png" /><meta name="twitter:description" content="A practical guide for Finagle" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="@gutefrageIT" /><meta name="twitter:creator" content="@gutefrageIT" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/kazari-style.css" /><link rel="stylesheet" href="/css/monokai.css" /><link rel="stylesheet" href="/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>The Finagle Docs</span></div></a></li>       <li><a href="/protocols.html" class="">Protocols</a> <ul class="sub_section"> <li><a href="/protocols/thrift.html" class=" active ">Thrift</a></li> <li><a href="/protocols/http.html" class="">Http</a></li></ul></li>    </ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/gutefrage/the-finagle-docs"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/gutefrage/the-finagle-docs"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('The Finagle Docs A practical guide for Finagle');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('The Finagle Docs A practical guide for Finagle');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="gutefrage" data-github-repo="the-finagle-docs"><div class="content-wrapper"><section><h2 id="thrift--thrift-mux">Thrift &amp; Thrift Mux</h2>
+
+<h3 id="what-is-thrift">What is Thrift</h3>
+
+<blockquote>
+  <p>“Apache Thrift allows you to define data types and service interfaces in a simple definition file.
+ Taking that file as input, the compiler generates code to be used to easily build RPC clients and&gt;
+ servers that communicate seamlessly across programming languages. Instead of writing a load of
+ boilerplate code to serialize and transport your objects and invoke remote methods, you can get
+ right down to business.” - <a href="https://thrift.apache.org/">Apache Thrift</a></p>
+</blockquote>
+
+<p>Finagle provides its own code generator <code class="highlighter-rouge">Scrooge</code>_ to generate Thrift encoders and decoders, but also
+the necessary finagle boilerplate create server and clients. The <code class="highlighter-rouge">Scrooge Code Generator</code>_ section
+describes the setup in more detail.</p>
+
+<h3 id="thrift-vs-thriftmux">Thrift vs ThriftMux</h3>
+
+<p>Finagle provides two thrift protocol implementations. A standard <code class="highlighter-rouge">Thrift</code> protocol that is
+compatible with other Thrift server and clients. And an improved <code class="highlighter-rouge">ThriftMux</code> implementation
+that allows multiplexing one single connections.</p>
+
+<p>If you have a heterogeneous environment the standard <code class="highlighter-rouge">Thrift</code> protocol should be used. For
+pure finagle environments the <code class="highlighter-rouge">ThriftMux</code> protocol is recommended as it provides better
+performance while using less resources.</p>
+
+<p>.. note:: The list of differences is not complete.</p>
+
+<h3 id="distribute-thrift-definitions">Distribute Thrift Definitions</h3>
+
+<p>A major benefit when using thrift is that you don’t have to distribute binaries ( class files or actual code ),
+but language agnostic thrift files. How you distribute these files depends on your service structure,
+build process and infrastructure.</p>
+
+<p>At gutefrage every service contains two sbt submodules:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">server</code> - the actual implementation of the service</li>
+  <li><code class="highlighter-rouge">api</code> - a package containing the thrift files and the service name</li>
+</ul>
+
+<p>Depending on a service means depending on the <code class="highlighter-rouge">api</code> package. Each service generates the necessary
+code with Scrooge to instantiate service clients. The next section describes the Scrooge setup.</p>
+
+<h3 id="scrooge-code-generator">Scrooge Code Generator</h3>
+
+<p><code class="highlighter-rouge">Scrooge</code>_ generates the necessary services stubs and finagle boilerplate to implement and
+serve thrift services. Activate it by adding this to your <code class="highlighter-rouge">plugins.sbt</code>:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">resolvers</span> <span class="o">+=</span> <span class="s">"twitter-repo"</span> <span class="n">at</span> <span class="s">"https://maven.twttr.com"</span>
+
+<span class="n">addSbtPlugin</span><span class="o">(</span><span class="s">"com.twitter"</span> <span class="o">%%</span> <span class="s">"scrooge-sbt-plugin"</span> <span class="o">%</span> <span class="s">"4.9.0"</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>Put your thrift files in <code class="highlighter-rouge">src/main/thrift</code>. The thrift sbt-plugin will pick the up and
+generate the code when you run <code class="highlighter-rouge">sbt compile</code>.</p>
+
+<h4 id="include-thrift-files">Include Thrift Files</h4>
+
+<p>Scrooge can extract <code class="highlighter-rouge">thrift</code> files from dependencies when added to the <code class="highlighter-rouge">scroogeThriftDependencies</code>
+setting. This autoplugin adds <code class="highlighter-rouge">thrift</code> files to the created jar.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code>
+<span class="cm">/**
+ * This plugin adds the thrift files to the packaged jar.
+ */</span>
+<span class="k">object</span> <span class="nc">ApiThriftSourcesPlugin</span> <span class="k">extends</span> <span class="nc">AutoPlugin</span> <span class="o">{</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="k">requires</span> <span class="k">=</span> <span class="nc">GFApiPlugin</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">trigger</span> <span class="k">=</span> <span class="nc">AllRequirements</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">projectSettings</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Setting</span><span class="o">[</span><span class="k">_</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+    <span class="c1">// add thrift files to output jar
+</span>    <span class="n">mappings</span> <span class="n">in</span> <span class="o">(</span><span class="nc">Compile</span><span class="o">,</span> <span class="n">packageBin</span><span class="o">)</span> <span class="o">++=</span> <span class="o">{</span>
+      <span class="o">(</span><span class="n">sourceDirectory</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="s">"main"</span> <span class="o">/</span> <span class="s">"thrift"</span><span class="o">).</span><span class="n">listFiles</span><span class="o">()</span>
+        <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">f</span> <span class="k">=&gt;</span> <span class="n">f</span><span class="o">.</span><span class="n">getName</span> <span class="n">endsWith</span> <span class="s">".thrift"</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">map</span> <span class="o">{</span> <span class="n">file</span> <span class="k">=&gt;</span>
+          <span class="n">file</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="n">s</span><span class="s">"com/yourcompany/server/&lt;servicename&gt;/thrift/${file.getName}"</span><span class="o">)</span>
+        <span class="o">}</span>
+        <span class="o">.</span><span class="n">toSeq</span>
+    <span class="o">}</span>
+  <span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h4 id="add-thrift-dependencies-automatically">Add Thrift Dependencies automatically</h4>
+
+<p>This auto plugin provides a basic way to add <code class="highlighter-rouge">libraryDependencies</code> coming from a certain
+organization to the <code class="highlighter-rouge">scroogeThriftDependencies</code>. Scrooge will then extract the <code class="highlighter-rouge">thrift</code>
+files from these dependencies and process them.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code>
+<span class="k">import</span> <span class="nn">sbt._</span>
+<span class="k">import</span> <span class="nn">com.twitter.scrooge.ScroogeSBT</span>
+
+<span class="k">object</span> <span class="nc">AddThriftDependencies</span> <span class="k">extends</span> <span class="nc">AutoPlugin</span> <span class="o">{</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="k">requires</span> <span class="k">=</span> <span class="nc">ScroogeSBT</span>
+  <span class="k">override</span> <span class="k">def</span> <span class="n">trigger</span> <span class="k">=</span> <span class="nc">AllRequirements</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">projectSettings</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span>
+    <span class="c1">// add library dependencies to scrooge
+</span>    <span class="n">scroogeThriftDependencies</span> <span class="n">in</span> <span class="nc">Compile</span> <span class="o">:=</span> <span class="o">{</span>
+      <span class="c1">// splits (2.10)(.x)
+</span>      <span class="k">val</span> <span class="n">pattern</span> <span class="k">=</span> <span class="s">"(\\d*\\.{1}\\d*)(.*)"</span><span class="o">.</span><span class="n">r</span>
+      <span class="k">val</span> <span class="n">pattern</span><span class="o">(</span><span class="n">version</span><span class="o">,</span> <span class="k">_</span><span class="o">)</span> <span class="k">=</span> <span class="n">scalaVersion</span><span class="o">.</span><span class="n">value</span>
+
+      <span class="c1">// adds all services in library dependencies as thrift dependencies
+</span>      <span class="n">libraryDependencies</span><span class="o">.</span><span class="n">value</span>
+        <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">organization</span> <span class="n">startsWith</span> <span class="s">"com.yourcompany.service"</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">"_"</span> <span class="o">+</span> <span class="n">version</span><span class="o">)</span>
+    <span class="o">}</span>
+  <span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h3 id="finagle-service">Finagle Service</h3>
+
+<p>This section explains how to implement and start a thrift server and how to create a thrift client.
+An <code class="highlighter-rouge">EchoService</code> will be used as an example. It’s defined by the following thrift definition file:</p>
+
+<pre><code class="language-thrift">namespace * echo.thrift
+
+service EchoService {
+   string echo(string msg);
+}
+</code></pre>
+
+<h4 id="server">Server</h4>
+
+<p>Scrooge generates different service stubs we could implement. A generic <code class="highlighter-rouge">EchoService[+MM[_]]</code> trait, that lets
+the user define monadic container for the service. And a specialized variant <code class="highlighter-rouge">EchoService.FutureIface</code>, which uses
+<em>Twitter Futures</em> as monadic containers. We recommend using the specialized variant as other helper classes require it.</p>
+
+<p>A example implementation looks like this:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">echo.thrift._</span>
+<span class="k">import</span> <span class="nn">com.twitter.util.Future</span>
+
+<span class="k">val</span> <span class="n">service</span><span class="k">:</span> <span class="kt">EchoService.FutureIface</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EchoService</span><span class="o">.</span><span class="nc">FutureIface</span> <span class="o">{</span>
+   <span class="k">override</span> <span class="k">def</span> <span class="n">echo</span><span class="o">(</span><span class="n">msg</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="kt">Future</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Future</span><span class="o">.</span><span class="n">value</span><span class="o">(</span><span class="n">s</span><span class="s">"Echo: $msg"</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Next we need to wrap the <code class="highlighter-rouge">FutureIface</code> implementation into a <a href="https://twitter.github.io/finagle/docs/#com.twitter.finagle.Service">Finagle Service</a>. Scrooge generates an
+<code class="highlighter-rouge">EchoService.FinagledService</code> for this purpose.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.twitter.finagle.Service</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.thrift.Protocols</span>
+
+<span class="k">val</span> <span class="n">finagledService</span><span class="k">:</span> <span class="kt">Service</span><span class="o">[</span><span class="kt">Array</span><span class="o">[</span><span class="kt">Byte</span><span class="o">]</span>, <span class="kt">Array</span><span class="o">[</span><span class="kt">Byte</span><span class="o">]]</span> <span class="k">=</span>
+    <span class="k">new</span> <span class="nc">EchoService</span><span class="o">.</span><span class="nc">FinagledService</span><span class="o">(</span><span class="n">service</span><span class="o">,</span> <span class="nc">Protocols</span><span class="o">.</span><span class="n">binaryFactory</span><span class="o">())</span>
+</code></pre>
+</div>
+
+<p>Now we can start a server.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Thrift</span><span class="o">,</span> <span class="nc">ThriftMux</span><span class="o">}</span>
+
+<span class="c1">// thrift protocol without announcing
+</span><span class="k">val</span> <span class="n">thriftServer</span> <span class="k">=</span> <span class="nc">Thrift</span><span class="o">.</span><span class="n">server</span>
+  <span class="o">.</span><span class="n">withLabel</span><span class="o">(</span><span class="s">"thrift-echo-service"</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">serve</span><span class="o">(</span>
+    <span class="n">addr</span> <span class="k">=</span> <span class="s">":8080"</span><span class="o">,</span>
+    <span class="n">service</span> <span class="k">=</span> <span class="n">finagledService</span>
+  <span class="o">)</span>
+
+<span class="c1">// ThriftMux protocol with announcing to a local zk instance
+</span><span class="k">val</span> <span class="n">thriftMuxServer</span> <span class="k">=</span> <span class="nc">ThriftMux</span><span class="o">.</span><span class="n">server</span>
+  <span class="o">.</span><span class="n">withLabel</span><span class="o">(</span><span class="s">"thriftmux-echo-service"</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">serveAndAnnounce</span><span class="o">(</span>
+    <span class="n">name</span> <span class="k">=</span> <span class="s">"zk!127.0.0.1:2181!/service/echo!0"</span><span class="o">,</span>
+    <span class="n">addr</span> <span class="k">=</span> <span class="s">":8081"</span><span class="o">,</span>
+    <span class="n">service</span> <span class="k">=</span> <span class="n">finagledService</span>
+  <span class="o">)</span>
+</code></pre>
+</div>
+
+<p>For more information on serving, announcing and resolving read the <a href="/service-discovery.html">service-discovery</a> section.</p>
+
+<h3 id="client">Client</h3>
+
+<p>Creating a client is done with the same <code class="highlighter-rouge">EchoService.FutureIface</code> trait.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">echo.thrift._</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.</span><span class="o">{</span><span class="nc">Thrift</span><span class="o">,</span> <span class="nc">ThriftMux</span><span class="o">}</span>
+
+<span class="c1">// Thrift client with dtab resolving
+</span><span class="k">val</span> <span class="n">thriftClient</span> <span class="k">=</span> <span class="nc">Thrift</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">newIface</span><span class="o">[</span><span class="kt">EchoService.FutureIFace</span><span class="o">](</span>
+  <span class="n">dest</span> <span class="k">=</span> <span class="s">"/s/echo"</span><span class="o">,</span> <span class="n">label</span> <span class="k">=</span> <span class="s">"echo-service-client"</span>
+<span class="o">)</span>
+
+<span class="c1">// ThriftMux client with static inet resolving
+</span><span class="k">val</span> <span class="n">thriftMuxClient</span> <span class="k">=</span> <span class="nc">ThriftMux</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">newIface</span><span class="o">[</span><span class="kt">EchoService.FutureIface</span><span class="o">](</span>
+  <span class="n">dest</span> <span class="k">=</span> <span class="s">"echo.services.local:8080"</span><span class="o">,</span> <span class="n">label</span> <span class="k">=</span> <span class="s">"echo-service-mux-client"</span>
+<span class="o">)</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">dest</code> parameter value depends on the type of <a href="/service-discovery.html">service-discovery</a> in use.</p>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/js/main.js"></script><script src="/js/main.js"></script><script src="/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'monokai')
+})
+    </script></body></html>

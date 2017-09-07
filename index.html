@@ -1,236 +1,106 @@
+<html><head><title>The Finagle Docs</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gutefrage.net GmbH" /><meta name="description" content="A practical guide for Finagle" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="The Finagle Docs" /><meta name="og:site_name" content="The Finagle Docs" /><meta name="og:url" content="https://gutefrage.github.io/the-finagle-docs" /><meta name="og:type" content="website" /><meta name="og:description" content="A practical guide for Finagle" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="The Finagle Docs" /><meta name="twitter:image" content="https://gutefrage.github.io/the-finagle-docsimg/poster.png" /><meta name="twitter:description" content="A practical guide for Finagle" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="@gutefrageIT" /><meta name="twitter:creator" content="@gutefrageIT" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/kazari-style.css" /><link rel="stylesheet" href="/css/monokai.css" /><link rel="stylesheet" href="/css/override.css" /></head><body><header id="site-header"><div class="navbar-wrapper"><div class="container"><div class="row"><div class="col-xs-6"><a href="/" class="brand"><div class="icon-wrapper"><span>The Finagle Docs</span></div></a></div><div class="col-xs-6"><nav class="text-right"><ul class=""><li><a href="https://github.com/gutefrage/the-finagle-docs"><i class="fa fa-github"></i><span class="hidden-xs">GitHub</span></a></li></ul></nav></div></div></div></div><div class="jumbotron"><div class="container"><h1 class="text-center">A practical guide for Finagle</h1><h2></h2><p class="text-center"><a href="https://github.com/gutefrage/the-finagle-docs" class="btn btn-outline-inverse">View on GitHub</a></p></div></div><div><ul class="horizontalNav">                             <li><a class="" href="/util.html">Finagle Util</a></li>  <li><a class="" href="/service-discovery.html">Service Discovery</a></li>  <li><a class="" href="/protocols.html">Protocols</a></li>  <li><a class="" href="/contexts.html">Contexts</a></li> </ul></div></header><main id="site-main"><section class="use"><div class="container"><div id="content"><h1 id="finagle">Finagle</h1>
 
+<blockquote>
+  <p>Finagle is an extensible RPC system for the JVM, used to construct high-concurrency servers. Finagle implements
+uniform client and server APIs for several protocols, and is designed for high performance and concurrency. Most of
+Finagle’s code is protocol agnostic, simplifying the implementation of new protocols.</p>
+</blockquote>
 
-<!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Gutefrage.net Finagle Documentation &mdash; The Finagle Docs 0.1-SNAPSHOT documentation</title>
-  
+<p>This documentation extends the <a href="http://twitter.github.io/finagle/guide/">Finagle Guide</a>, fills the missing gaps and
+provides more examples.</p>
 
-  
-  
+<h1 id="content">Content</h1>
 
-  
+<p>This documentation contains an overview for various Finagle features and provides examples on how to use them.
+Finagles solves different problems and provides a lot of abstractions and helpers. We splitted the documentation in
+different topics for easier consumption.</p>
 
-  
-  
-    
+<h2 id="finagle-util"><a href="/util.html">Finagle Util</a></h2>
 
-  
+<p>The twitter utility library provides a bunch of helpers for standard problems, e.g</p>
 
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-    <link rel="stylesheet" href="_static/css/theme_overrides.css" type="text/css" />
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="The Finagle Docs 0.1-SNAPSHOT documentation" href="#"/>
-        <link rel="next" title="Introduction" href="content/introduction.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav" role="document">
-
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="#" class="icon icon-home"> The Finagle Docs
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                0.1-SNAPSHOT
-              </div>
-            
-          
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="content/introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/finagle-util.html">Finagle Util</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/protocols/index.html">Protocols</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/service-discovery.html">Service Discovery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/contexts.html">Contexts</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="#">The Finagle Docs</a>
-      </nav>
-
-
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          
-
- 
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href="#">Docs</a> &raquo;</li>
-      
-    <li>Gutefrage.net Finagle Documentation</li>
-      <li class="wy-breadcrumbs-aside">
-        
-          
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-          
-        
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-            
-  <div class="section" id="welcome-to-the-finagle-docs-s-documentation">
-<h1>Welcome to The Finagle Docs&#8217;s documentation!<a class="headerlink" href="#welcome-to-the-finagle-docs-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="content/introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="content/finagle-util.html">Finagle Util</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="content/finagle-util.html#finagle-app">Finagle App</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/finagle-util.html#flags-cli-paramter-parsing">Flags - CLI Paramter Parsing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/finagle-util.html#twitter-server">Twitter Server</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/finagle-util.html#finagle-stats">Finagle Stats</a></li>
+  <li>App trait</li>
+  <li>Logging</li>
+  <li>Flags ( commandline arguments )</li>
+  <li>Metrics</li>
+  <li>…</li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="content/protocols/index.html">Protocols</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="content/protocols/index.html#thrift-thrift-mux">Thrift &amp; Thrift Mux</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/protocols/index.html#http">Http</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="content/service-discovery.html">Service Discovery</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="content/service-discovery.html#resolver-names">Resolver &amp; Names</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/service-discovery.html#announcing">Announcing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/service-discovery.html#static-resolving">Static Resolving</a></li>
-<li class="toctree-l2"><a class="reference internal" href="content/service-discovery.html#dynamic-resolving">Dynamic Resolving</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="content/contexts.html">Contexts</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="content/contexts.html#custom-contexts">Custom Contexts</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
 
+<h2 id="service-discovery"><a href="/service-discovery.html">Service Discovery</a></h2>
 
-           </div>
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="content/introduction.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-    </div>
-  
+<p>The service discovery section explains the different options for announcing and disocvering services.
+Static and dynamic routing (Dtabs) is also part of this section.</p>
 
-  <hr/>
+<h2 id="protocols"><a href="/protocols.html">Protocols</a></h2>
 
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2016, Gutefrage.net.
+<p>Finagle provides implementations for the http, thrift, thrift mux, mysql, redis and memcached protocols.
+We added examples that explain how to implement a server and start a client for these protocols.</p>
 
-    </p>
+<h2 id="contexts"><a href="/contexts.html">Contexts</a></h2>
+
+<p>Contexts are a Finagle abstraction for implicitly passing request context information along with a request.</p>
+
+<h1 id="posts">Posts</h1>
+
+<p>Here are some resources that are worth reading or watching to get a better undstanding of Finagle.</p>
+
+<h2 id="finagle-101">Finagle 101</h2>
+
+<blockquote>
+  <p>This post is based on my talk
+<a href="http://event.scaladays.org/scaladays-nyc-2016#!#schedulePopupExtras-7565">“Finagle: Under the Hood”</a> that was
+presented at Scala Days NYC. I thought I’d publish this for those who prefer reading instead of watching
+(video is not yet published anyway). The full slide deck is available online as well.</p>
+</blockquote>
+
+<p>Source: <a href="http://vkostyukov.net/posts/finagle-101/">Finagle 101</a></p>
+
+<h2 id="twitter-scala-school">Twitter Scala School</h2>
+
+<blockquote>
+  <p>An introduction to Finagle.</p>
+</blockquote>
+
+<p>Source: <a href="https://twitter.github.io/scala_school/finagle.html">Twitter Scala School</a></p>
+
+<h2 id="a-beginners-guide-for-twitter-finagle">A Beginners Guide for Twitter Finagle</h2>
+
+<blockquote>
+  <p>Twitter Finagle is a great framework to write distributed applications in Scala or Java. This article is a
+“getting started” guide for a simple, distributed application.</p>
+</blockquote>
+
+<p>Source: <a href="https://medium.com/@muuki88/a-beginners-guide-for-twitter-finagle-7ff7189541e5">A Beginners Guide for Twitter Finagle</a></p>
+
+<h1 id="videos">Videos</h1>
+
+<div class="row">
+  <div class="col-sm-4">
+    <h3>Finagle Under the Hood</h3>
+    <iframe width="100%" height="auto" src="https://www.youtube.com/embed/kfs-dtbG0kY?rel=0" frameborder="0" allowfullscreen=""></iframe>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
-        </div>
-      </div>
-
-    </section>
-
+  <div class="col-sm-4">
+    <h3>Finagle for Beginners</h3>
+    <iframe width="100%" height="auto" src="https://www.youtube.com/embed/zcoE-wq7RF8?rel=0" frameborder="0" allowfullscreen=""></iframe>
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.1-SNAPSHOT',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
-      });
-  </script>
-   
-
-</body>
-</html>
+  <div class="col-sm-4">
+    <h3>Building high performance servers with Twitter</h3>
+    <iframe width="100%" height="auto" src="https://www.youtube.com/embed/Ne0BkCtcJa8?rel=0" frameborder="0" allowfullscreen=""></iframe>
+  </div>
+</div>
+</div></div></section><section class="technologies"><div class="container"><div class="row">
+            <div class="col-md-4"><div class="first-icon-wrapper"></div><h3>Scala</h3><p>Finagle is written in Scala</p></div>
+          
+            <div class="col-md-4"><div class="second-icon-wrapper"></div><h3>Finagle</h3><p>Finagle is a framework to build resilient and scalable microservices</p></div>
+          
+            <div class="col-md-4"><div class="third-icon-wrapper"></div><h3>Thrift</h3><p>Thrift is binary protocol for RPC</p></div>
+          </div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>The Finagle Docs is designed and developed by <a href="https://www.gutefrage.net" target="_blank">Gutefrage.net GmbH</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/gutefrage/the-finagle-docs"><span class="fa fa-github"></span>View on GitHub</a></p></div></div><div class="row"><div class="col-xs-6"><p>Website built with <a href="https://47deg.github.io/sbt-microsites/" target="_blank">Sbt-microsites</a> - © 2016 <a href="https://www.47deg.com/" target="_blank">47 Degrees</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/js/main.js"></script><script src="/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'monokai')
+})
+    </script></body></html>

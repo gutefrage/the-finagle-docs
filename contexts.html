@@ -1,0 +1,119 @@
+<html><head><title>The Finagle Docs</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gutefrage.net GmbH" /><meta name="description" content="A practical guide for Finagle" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="The Finagle Docs" /><meta name="og:site_name" content="The Finagle Docs" /><meta name="og:url" content="https://gutefrage.github.io/the-finagle-docs" /><meta name="og:type" content="website" /><meta name="og:description" content="A practical guide for Finagle" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="The Finagle Docs" /><meta name="twitter:image" content="https://gutefrage.github.io/the-finagle-docsimg/poster.png" /><meta name="twitter:description" content="A practical guide for Finagle" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="@gutefrageIT" /><meta name="twitter:creator" content="@gutefrageIT" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/kazari-style.css" /><link rel="stylesheet" href="/css/monokai.css" /><link rel="stylesheet" href="/css/override.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>The Finagle Docs</span></div></a></li>           </ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/gutefrage/the-finagle-docs"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/gutefrage/the-finagle-docs"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('The Finagle Docs A practical guide for Finagle');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('The Finagle Docs A practical guide for Finagle');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="gutefrage" data-github-repo="the-finagle-docs"><div class="content-wrapper"><section><h1 id="contexts">Contexts</h1>
+
+<p>The <a href="https://twitter.github.io/finagle/guide/Contexts.html">Finagle documentation on Contexts</a> gives a good introduction and describes multiple use cases. They can be used
+to transport request meta data or application-wide context like authentication data.</p>
+
+<p>From the Finagle documentation:</p>
+
+<blockquote>
+  <p>Contexts can be either local or broadcast. Local contexts do not cross process boundaries while broadcast
+contexts may be marshalled and transmitted across process boundaries.</p>
+</blockquote>
+
+<h2 id="custom-contexts">Custom Contexts</h2>
+
+<p>This section demonstrates how to create a custom <code class="highlighter-rouge">Context</code> and how to use them. As an example we will provide a
+basic authentication information as context.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">UserContext</span><span class="o">(</span><span class="n">userId</span><span class="k">:</span> <span class="kt">Long</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>A context is described and typed by a <a href="https://twitter.github.io/finagle/docs/index.html#com.twitter.finagle.context.Context@Key[A]">Key</a>. The <a href="https://twitter.github.io/finagle/docs/#com.twitter.finagle.context.Contexts$">Contexts</a> object provides the necessary context instances to create
+a Key.</p>
+
+<h3 id="local-context">Local Context</h3>
+
+<p>Local contexts are easy to create, but are limited to the process. No marshalling is required.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.twitter.finagle.context.Contexts</span>
+
+<span class="k">object</span> <span class="nc">UserContextLocal</span> <span class="k">extends</span> <span class="nc">Contexts</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="nc">Key</span><span class="o">[</span><span class="kt">UserContext</span><span class="o">]</span> <span class="o">{</span>
+  <span class="cm">/**
+    * @return The local UserContext if set
+    */</span>
+  <span class="k">def</span> <span class="n">current</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">UserContext</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Contexts</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="nc">UserContextLocal</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<p>Now it’s possible to access the <code class="highlighter-rouge">UserContext</code> in your service at any place in the request chain with
+<code class="highlighter-rouge">UserContextLocal.current()</code>.</p>
+
+<h3 id="broadcast-context">Broadcast Context</h3>
+
+<p>Broadcast contexts get serialized and are available across service boundaries. For this reason you must</p>
+
+<ol>
+  <li>Implement marshalling and unmarshalling methods</li>
+  <li>Provide a string identifier for the context so that Finagle can look it up. Normally the fully qualified class name
+is used</li>
+</ol>
+
+<p>A low level implementation with <code class="highlighter-rouge">com.twitter.io.Buf</code> looks like this.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.twitter.finagle.context.Contexts</span>
+<span class="k">import</span> <span class="nn">com.twitter.finagle.util.ByteArrays</span>
+<span class="k">import</span> <span class="nn">com.twitter.io.Buf</span>
+<span class="k">import</span> <span class="nn">com.twitter.util.</span><span class="o">{</span><span class="nc">Return</span><span class="o">,</span> <span class="nc">Throw</span><span class="o">,</span> <span class="nc">Try</span><span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">UserContext</span> <span class="k">extends</span>
+  <span class="nc">Contexts</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="nc">Key</span><span class="o">[</span><span class="kt">UserContext</span><span class="o">](</span><span class="s">"net.gutefrage.context.UserContext"</span><span class="o">)</span> <span class="o">{</span>
+
+  <span class="k">private</span> <span class="k">val</span> <span class="n">bodyLengthBytes</span> <span class="k">=</span> <span class="mi">8</span>
+
+  <span class="cm">/**
+    * Returns the current request's UserContext, if set.
+    */</span>
+  <span class="k">def</span> <span class="n">current</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">UserContext</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Contexts</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">get</span><span class="o">(</span><span class="nc">UserContext</span><span class="o">)</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">marshal</span><span class="o">(</span><span class="n">userContext</span><span class="k">:</span> <span class="kt">UserContext</span><span class="o">)</span><span class="k">:</span> <span class="kt">Buf</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">bytes</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Array</span><span class="o">[</span><span class="kt">Byte</span><span class="o">](</span><span class="n">bodyLengthBytes</span><span class="o">)</span>
+    <span class="nc">ByteArrays</span><span class="o">.</span><span class="n">put64be</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">userContext</span><span class="o">.</span><span class="n">userId</span><span class="o">)</span>
+    <span class="nc">Buf</span><span class="o">.</span><span class="nc">ByteArray</span><span class="o">.</span><span class="nc">Owned</span><span class="o">(</span><span class="n">bytes</span><span class="o">)</span>
+  <span class="o">}</span>
+
+  <span class="k">override</span> <span class="k">def</span> <span class="n">tryUnmarshal</span><span class="o">(</span><span class="n">body</span><span class="k">:</span> <span class="kt">Buf</span><span class="o">)</span><span class="k">:</span> <span class="kt">Try</span><span class="o">[</span><span class="kt">UserContext</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">body</span><span class="o">.</span><span class="n">length</span> <span class="o">!=</span> <span class="n">bodyLengthBytes</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="nc">Throw</span><span class="o">(</span><span class="k">new</span> <span class="nc">IllegalArgumentException</span><span class="o">(</span>
+        <span class="n">s</span><span class="s">"Invalid body. Length ${body.length} but required 16"</span>
+      <span class="o">))</span>
+    <span class="o">}</span>
+
+    <span class="k">val</span> <span class="n">bytes</span> <span class="k">=</span> <span class="nc">Buf</span><span class="o">.</span><span class="nc">ByteArray</span><span class="o">.</span><span class="nc">Owned</span><span class="o">.</span><span class="n">extract</span><span class="o">(</span><span class="n">body</span><span class="o">)</span>
+    <span class="k">val</span> <span class="n">userId</span> <span class="k">=</span> <span class="nc">ByteArrays</span><span class="o">.</span><span class="n">get64be</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span> <span class="mi">0</span><span class="o">)</span>
+
+    <span class="nc">Return</span><span class="o">(</span><span class="nc">UserContext</span><span class="o">(</span><span class="n">userId</span><span class="o">))</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+<h3 id="usage">Usage</h3>
+
+<p>Setting a context works the same way for both types with the only difference that you choose either <code class="highlighter-rouge">Contexts.local</code>
+or <code class="highlighter-rouge">Contexts.broadcast</code>.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">com.twitter.finagle.context.Contexts</span>
+
+<span class="c1">// create an actual context
+</span><span class="k">val</span> <span class="n">userContext</span> <span class="k">=</span> <span class="nc">UserContext</span><span class="o">(</span><span class="mi">5L</span><span class="o">)</span>
+
+<span class="c1">// set the context for all requests made in the given block
+</span><span class="nc">Contexts</span><span class="o">.</span><span class="n">broadcast</span><span class="o">.</span><span class="n">let</span><span class="o">(</span><span class="nc">UserContext</span><span class="o">,</span> <span class="n">userContext</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// the `aMethod` in `someService` will be able to access
+</span>  <span class="c1">// this UserContext with UserContext.current()
+</span>  <span class="n">someService</span><span class="o">.</span><span class="n">aMethod</span><span class="o">()</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/js/main.js"></script><script src="/js/main.js"></script><script src="/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'monokai')
+})
+    </script></body></html>
