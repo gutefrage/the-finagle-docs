@@ -12,6 +12,7 @@ micrositeTwitter := "@gutefrageIT"
 micrositeTwitterCreator := "@gutefrageIT"
 micrositeGithubOwner := "gutefrage"
 micrositeGithubRepo := "the-finagle-docs"
+micrositeBaseUrl := "/the-finagle-docs"
 micrositeHighlightTheme := "atom-one-light"
 micrositeGitterChannel := false
 // micrositeAnalyticsToken := "UA-XXXX-Y"
