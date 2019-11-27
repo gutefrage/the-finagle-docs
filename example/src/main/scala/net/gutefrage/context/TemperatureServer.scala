@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import com.twitter.finagle._
 import com.twitter.finagle.thrift.Protocols
-import com.twitter.logging.Logger
+import com.twitter.logging.{Logger, Logging}
 import com.twitter.server.TwitterServer
 import com.twitter.util.{Await, Future}
 import net.gutefrage.Env
@@ -20,7 +20,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
   * See the README.md for start instructions.
   *
   */
-object TemperatureServer extends TwitterServer {
+object TemperatureServer extends TwitterServer with Logging{
 
   val port = flag[Int]("port", 8080, "port this server should use")
   val env = flag[Env]("env", Env.Local, "environment this server runs")
@@ -33,7 +33,7 @@ object TemperatureServer extends TwitterServer {
   }
 
   onExit {
-    log.info("Shutting down temperature server")
+    info("Shutting down temperature server")
   }
 
   val appLog = Logger("application")

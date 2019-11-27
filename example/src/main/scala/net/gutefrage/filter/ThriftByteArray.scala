@@ -2,6 +2,8 @@ package net.gutefrage.filter
 
 /** Credit: http://stevenskelton.ca/finagle-query-cache-with-guava/ */
 
+
+
 import com.google.common.hash.Hashing
 import org.apache.commons.codec.binary.Base64
 

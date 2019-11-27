@@ -2,8 +2,10 @@ package net.gutefrage.healthcheck
 
 import com.twitter.finagle.{Service, Status, ThriftMux}
 import com.twitter.finagle.http.{Request, Response}
+import com.twitter.logging.Logger
 import com.twitter.server.AdminHttpServer.Route
 import com.twitter.server.TwitterServer
+import com.twitter.util.logging.Logging
 import com.twitter.util.{Await, Future}
 import io.circe.{Encoder, Json}
 import net.gutefrage.{Dtabs, Env}
@@ -17,7 +19,7 @@ import io.finch.circe._
   *
   * Resolving is performed via a static schema lookup. Zookeeper will be used as a schema.
   */
-object HealthCheckService extends TwitterServer {
+object HealthCheckService extends TwitterServer with Logging{
   val env = flag[Env]("env", Env.Local, "environment this server runs")
 
   premain {
@@ -29,7 +31,7 @@ object HealthCheckService extends TwitterServer {
   }
 
   onExit {
-    log.info("Shutting down sensor")
+    info("Shutting down sensor")
   }
 
   /**

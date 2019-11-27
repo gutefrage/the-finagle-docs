@@ -2,16 +2,16 @@ name := "finagle-weather"
 version := "1.0"
 organization := "net.gutefrage"
 
-scalaVersion  := "2.11.8"
-ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
+scalaVersion  := "2.11.12"
+// ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
-val finagleVersion = "6.39.0"
-val finagleTwitterServer = "1.24.0"
+val finagleVersion = "17.11.0"
+val finagleTwitterServer = "17.11.0"
 val finchVersion = "0.10.0"
 val finatraVersion = "2.5.0"
 
 libraryDependencies ++= Seq(
-  "com.twitter" %% "scrooge-core" % "4.11.0",
+  "com.twitter" %% "scrooge-core" % "17.11.0",
   "com.twitter" %% "finagle-serversets" % finagleVersion,
   "com.twitter" %% "finagle-redis" % finagleVersion,
   "com.twitter" %% "finagle-mysql" % finagleVersion,
@@ -31,7 +31,8 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-core" % "1.1.7",
   "ch.qos.logback" % "logback-classic" % "1.1.7",
   // TODO remove and use finagle-redis
-  "net.debasishg" %% "redisclient" % "3.0"
+  "net.debasishg" %% "redisclient" % "3.0",
+  "commons-codec" % "commons-codec" % "1.13"
 )
 
 libraryDependencies := libraryDependencies.value.map(_

@@ -4,6 +4,7 @@ import com.twitter.app.Flaggable
 import com.twitter.conversions.time._
 import com.twitter.finagle.{Dtab, ThriftMux}
 import com.twitter.finagle.util.DefaultTimer
+import com.twitter.logging.Logging
 import com.twitter.server.TwitterServer
 import com.twitter.util.{Await, Future}
 import net.gutefrage.temperature.thrift._
@@ -17,7 +18,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
   * `Dtabs.init()` is called in `premain`, which set the base dtab for this process.
   * You can provide additional dtab entries
   */
-object TemperatureSensorDtabs extends TwitterServer {
+object TemperatureSensorDtabs extends TwitterServer with Logging{
 
   val env = flag[Env]("env", Env.Local, "environment this server runs")
   val baseDtab = flag[Dtab]("dtab", Dtab.empty, "additional dtabs this service should use")
@@ -38,14 +39,14 @@ object TemperatureSensorDtabs extends TwitterServer {
 
     // initialise custom dtabs
     Dtabs.init(baseDtab())
-    log.info(
+    info(
       s"""|Use base dtab:
           |${Dtab.base.show}
        """.stripMargin)
   }
 
   onExit {
-    log.info("Shutting down sensor")
+    info("Shutting down sensor")
   }
 
   def main(): Unit = {
@@ -61,7 +62,7 @@ object TemperatureSensorDtabs extends TwitterServer {
     def sendLoop: Future[Unit] = {
       val datum = TemperatureDatum(randomTemp.nextInt(40) - 10,
                                    System.currentTimeMillis / 1000)
-      log.info(s"Sending data: $datum")
+      info(s"Sending data: $datum")
       for {
         _ <- Future.sleep(1.second)
         _ <- client.add(datum)
