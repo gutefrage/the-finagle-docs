@@ -4,6 +4,7 @@ import com.twitter.conversions.time._
 import com.twitter.finagle.ThriftMux
 import com.twitter.finagle.util.DefaultTimer
 import com.twitter.server.TwitterServer
+import com.twitter.util.logging.Logging
 import com.twitter.util.{Await, Future}
 import net.gutefrage.temperature.thrift._
 import net.gutefrage.{Dtabs, Env}
@@ -14,7 +15,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
   *
   * Resolving is performed via a static schema lookup. Zookeeper will be used as a schema.
   */
-object TemperatureSensorStatic extends TwitterServer {
+object TemperatureSensorStatic extends TwitterServer with Logging{
   val env = flag[Env]("env", Env.Local, "environment this server runs")
 
   premain {
@@ -26,7 +27,7 @@ object TemperatureSensorStatic extends TwitterServer {
   }
 
   onExit {
-    log.info("Shutting down sensor")
+    info("Shutting down sensor")
   }
 
   def main(): Unit = {
@@ -43,7 +44,7 @@ object TemperatureSensorStatic extends TwitterServer {
     def sendLoop: Future[Unit] = {
       val datum = TemperatureDatum(randomTemp.nextInt(40) - 10,
                                    System.currentTimeMillis / 1000)
-      log.info(s"Sending data: $datum")
+      info(s"Sending data: $datum")
       for {
         _ <- Future.sleep(1.second)
         _ <- client.add(datum)
